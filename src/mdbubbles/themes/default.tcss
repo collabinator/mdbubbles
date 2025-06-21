@@ -1,0 +1,189 @@
+/* Default Textual theme for mdbub edit mode */
+
+Screen {
+    background: $background;
+    layout: vertical;
+}
+
+/* === Breadcrumb Bar === */
+BreadcrumbBar, .breadcrumb-bar {
+    height: 1;
+    width: 1fr;
+    background: $surface-darken-1;
+    color: $accent;
+    text-style: bold;
+    border-top: solid $accent;
+    padding: 0 1;
+}
+
+/* === Status Bar === */
+StatusBar {
+    dock: bottom;
+    height: 1;
+    width: 1fr;
+}
+
+/* === RangerView and Tree Columns === */
+RangerView {
+    layout: horizontal;
+    height: 1fr;
+    width: 1fr;
+}
+
+.debugbox {
+    background: magenta;
+    color: white;
+    height: 1fr;
+    width: 1fr;
+}
+
+ParentSiblingsColumn, .parent-col {
+    width: 1fr;
+    min-width: 20;
+    height: 1fr;
+    background: $surface-darken-2;
+    color: $accent;
+    overflow-y: auto;
+}
+
+CurrentSiblingsColumn, .current-col {
+    width: 1fr;
+    min-width: 20;
+    height: 1fr;
+    background: $surface-darken-1;
+    color: $primary;
+    overflow-y: auto;
+}
+
+ChildrenColumn, .children-col {
+    width: 1fr;
+    min-width: 20;
+    height: 1fr;
+    background: $surface-darken-3;
+    color: $secondary;
+    overflow-y: auto;
+}
+
+/* Ranger-like 3-column layout */
+#parent-container {
+    width: 30%;
+    min-width: 15;
+    height: 1fr;
+    border-right: solid $accent;
+    background: $surface-darken-2;
+    padding: 0 1;
+}
+
+#current-container {
+    width: 40%;
+    min-width: 20;
+    height: 1fr;
+    border-right: solid $primary;
+    background: $surface;
+    padding: 0 1;
+}
+
+#children-container {
+    width: 30%;  
+    min-width: 15;
+    height: 1fr;
+    background: $surface-darken-1;
+    padding: 0 1;
+}
+
+/* Selected item highlighting */
+.selected {
+    background: $accent;
+    color: $text;
+}
+
+/* Focus indicators */
+ThreeColumnTreeView:focus #siblings-container {
+    border: heavy $primary;
+}
+
+ThreeColumnTreeView #breadcrumbs-container {
+    border-left: none;
+}
+
+ThreeColumnTreeView #children-container {
+    border-right: none;
+}
+
+/* === Label Editor Popup === */
+#label-edit-popup {
+    layer: overlay;
+    align: center middle;
+    width: 60%;
+    max-width: 80;
+    height: auto;
+    background: black;
+    color: yellow;
+    border: heavy red;
+    padding: 1;
+    margin: 1;
+}
+
+#edit-popup-container {
+    layout: vertical;
+    height: auto;
+    width: 1fr;
+    background: $background;
+}
+
+#edit-popup-header {
+    height: 1;
+    width: 1fr;
+    background: black;
+    color: yellow;
+    text-style: bold;
+    text-align: center;
+    padding: 0 1;
+    border: heavy white;
+}
+
+#edit-popup-input {
+    height: 2;
+    width: 1fr;
+    background: black;
+    color: yellow;
+    border: heavy white;
+    padding: 1 2;
+    margin: 2 0;
+    text-style: bold;
+}
+
+
+#edit-popup-input:focus {
+    border: heavy $primary;
+    background: $background;
+    color: $accent;
+    text-style: bold;
+}
+
+
+#edit-popup-header {
+    height: 2;
+    width: 1fr;
+    background: $primary;
+    color: $background;
+    text-style: bold;
+    text-align: center;
+    padding: 1 2;
+}
+
+
+
+#edit-popup-input:focus {
+    border: heavy $accent;
+}
+
+#edit-popup-preview {
+    height: 1;
+    width: 1fr;
+    background: $surface-darken-1;
+    color: $text-muted;
+    padding: 0 1;
+    text-style: italic;
+}
+

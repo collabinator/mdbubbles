@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>mdbub</id>
+    <version>0.1.0</version>
+    <packageSourceUrl>https://github.com/YOUR_USERNAME/chocolatey-packages/tree/main/mdbub</packageSourceUrl>
+    <owners>YOUR_USERNAME</owners>
+    <title>mdbub</title>
+    <authors>dudash</authors>
+    <projectUrl>https://github.com/YOUR_USERNAME/mdbubbles</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/YOUR_USERNAME/mdbubbles/main/docs/icon.png</iconUrl>
+    <copyright>2025 dudash</copyright>
+    <licenseUrl>https://github.com/YOUR_USERNAME/mdbubbles/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/YOUR_USERNAME/mdbubbles</projectSourceUrl>
+    <bugTrackerUrl>https://github.com/YOUR_USERNAME/mdbubbles/issues</bugTrackerUrl>
+    <tags>cli terminal mindmap markdown productivity</tags>
+    <summary>Terminal-first interactive mindmap CLI tool</summary>
+    <description><![CDATA[
+mdbub is a mindmap tool for your terminal. Fast. Fluid. Keyboard-native. Built for thinkers who live in the CLI.
+
+## Features
+
+- **Quick Mode**: Instant mini-editor for rapid note capture
+- **Edit Mode**: Full-screen terminal interface for folding, searching, tagging
+- **Keyboard-native UX**: Everything is hotkey driven. Customize to your liking
+- **Zero-mouse flow**: It's not just fast. It feels alive under your fingertips
+
+## Usage
+
+```
+mdbub quick    # Quick mode for rapid note capture
+mdbub edit     # Full-screen editing mode
+mdbub version  # Show version and build info
+```
+]]></description>
+    <releaseNotes>https://github.com/YOUR_USERNAME/mdbubbles/releases</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

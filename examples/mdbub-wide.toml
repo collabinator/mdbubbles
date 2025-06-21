@@ -1,0 +1,144 @@
+# Place this file in ~/.config/mdbub/mdbub.toml to override UI constants
+# You can omit any keys; missing keys will fall back to the built-in defaults.
+
+# ANSI color and highlight codes for terminal prints
+# Blue & Gray UI Theme
+# Semantic color roles (legacy single-value keys for backward compatibility)
+COLOR_PRINTS_CLEAR = "\u001b[H\u001b[J"  # Clear screen
+COLOR_PRINTS_RESET = "\u001b[0m"  # Reset
+COLOR_PRINTS_BLINK = "blink"  # Rich blink style (not ANSI)
+
+# Foreground/background split for all roles (preferred)
+COLOR_PRINTS_ACCENT_FG = "\u001b[36m"
+COLOR_PRINTS_ACCENT_BG = ""
+COLOR_PRINTS_HIGHLIGHT_FG = ""
+COLOR_PRINTS_HIGHLIGHT_BG = "\u001b[44m"
+COLOR_PRINTS_TEXT_FG = "\u001b[37m"
+COLOR_PRINTS_TEXT_BG = ""
+COLOR_PRINTS_DIM_FG = "\u001b[90m"
+COLOR_PRINTS_DIM_BG = ""
+COLOR_PRINTS_WARNING_FG = "\u001b[37m"
+COLOR_PRINTS_WARNING_BG = ""
+COLOR_PRINTS_SUCCESS_FG = "\u001b[37m"
+COLOR_PRINTS_SUCCESS_BG = ""
+COLOR_PRINTS_ERROR_FG = "\u001b[91m"
+COLOR_PRINTS_ERROR_BG = ""
+COLOR_PRINTS_STATUS_BAR_FG = "\u001b[93m"
+COLOR_PRINTS_STATUS_BAR_BG = ""
+COLOR_PRINTS_BREADCRUMB_BAR_FG = "\u001b[36m"
+COLOR_PRINTS_BREADCRUMB_BAR_BG = ""
+COLOR_PRINTS_CHILD_HIGHLIGHT_FG = "\u001b[90m"
+COLOR_PRINTS_CHILD_HIGHLIGHT_BG = ""
+
+# --- UI Timings (in seconds) ---
+# How long to show status messages in the UI
+STATUS_MESSAGE_TIMEOUT_SHORT = 1.0  # Short status (e.g., cancel, quick info)
+STATUS_MESSAGE_TIMEOUT = 2.0        # Normal status (e.g., save, warning)
+STATUS_MESSAGE_TIMEOUT_LONG = 4.0   # Long status (e.g., search not found)
+
+# --- Layout ---
+# How many child nodes to show at once in the horizontal display
+MAX_VISIBLE_CHILDREN = 7
+
+# --- Length Caps ---
+# Maximum characters for various node labels
+MAX_NODE_LABEL_VIZ_LENGTH = 4096        # Maximum label length for any node
+MAX_BREADCRUMB_NODE_VIZ_LENGTH = 50     # Max chars for a node in the breadcrumb path
+MAX_CHILDNODE_VIZ_LENGTH = 50           # Max chars for a child node in the child list
+
+# --- Colors ---
+# Rich color names or styles for UI elements (not supported yet)
+# COLOR_BREADCRUMBS = "white"              # Breadcrumb path (non-root)
+# COLOR_BREADCRUMBS_ROOT = "bold blue"  # Breadcrumb root node
+# COLOR_BREADCRUMBS_CURRENT = "bold gray"# Breadcrumb current node
+# COLOR_CURRENT_NODE = "bold green"         # Current node label
+# COLOR_SELECTED_CHILD = "black on yellow"  # Selected child node
+# COLOR_CHILD = "white"                      # Unselected child node
+# COLOR_PAGINATION = "bright_blue"          # Pagination arrows
+# COLOR_POSITION = "dim gray"             # Position indicator (e.g., 2/5)
+# COLOR_STATUS = "green"                    # Status messages
+# COLOR_HOTKEYS = "gray"                 # Hotkey hints
+# COLOR_ERROR = "red"                       # Error messages
+# COLOR_WARNING = "yellow"                  # Warning messages
+# COLOR_SUCCESS = "green"                   # Success messages
+
+# --- Symbols ---
+# Unicode or ASCII symbols for UI elements
+SYMBOL_BULLET = "●"                       # Bullet for node
+SYMBOL_BRANCH = "└─"                      # Branch connector
+SYMBOL_ROOT = "◎"                         # Root node symbol
+SYMBOL_MORE_LEFT = "« more"                # Left pagination indicator
+SYMBOL_MORE_RIGHT = "more »"               # Right pagination indicator
+SYMBOL_CHILDNODE_OPENWRAP = "⟦"            # Open wrapper for child nodes
+SYMBOL_CHILDNODE_CLOSEWRAP = "⟧"           # Close wrapper for child nodes
+SYMBOL_BREADCRUMBNODE_OPENWRAP = "["      # Open wrapper for breadcrumb nodes
+SYMBOL_BREADCRUMBNODE_CLOSEWRAP = "]"      # Close wrapper for breadcrumb nodes
+
+
+# -------------------
+# WRAPPER SYMBOL OPTIONS
+# -------------------
+# These symbols can be used for SYMBOL_CHILDNODE_OPENWRAP, SYMBOL_CHILDNODE_CLOSEWRAP,
+# SYMBOL_BREADCRUMBNODE_OPENWRAP, and SYMBOL_BREADCRUMBNODE_CLOSEWRAP
+#
+# TRADITIONAL BRACKETS
+# -------------------------------------------------------------------------------------
+# Parentheses:        (   )
+# Square brackets:    [   ]
+# Curly braces:       {   }
+# Angle brackets:     <   >
+#
+# ASIAN STYLE BRACKETS
+# -------------------------------------------------------------------------------------
+# Japanese corner brackets:    「   」
+# White corner brackets:       『   』
+# Black lenticular brackets:   【   】
+# White lenticular brackets:   〖   〗
+# Tortoise shell brackets:     〔   〕
+# Double angle brackets:       《   》
+# CJK brackets:                〈   〉
+# Fullwidth brackets:          （   ）
+# Fullwidth curly braces:      ｛   ｝
+# Fullwidth square brackets:   ［   ］
+#
+# MATHEMATICAL AND SPECIAL BRACKETS
+# -------------------------------------------------------------------------------------
+# Mathematical angle brackets:  ⟨   ⟩
+# Double square brackets:       ⟦   ⟧
+# Floor brackets:               ⌊   ⌋
+# Ceiling brackets:             ⌈   ⌉
+# Z notation:                   ⦇   ⦈
+# Angle with dot:               ⦑   ⦒
+# Square with ticks:            ⦋   ⦌
+# Double-struck brackets:       ⟦   ⟧
+#
+# DECORATIVE SYMBOLS (PAIRED)
+# -------------------------------------------------------------------------------------
+# Stars:                         ✧   ✧
+# Black stars:                   ★   ★
+# Arrows:                        →   ←
+# Heavy arrows:                  ➤   ➤
+# Triangle arrows:               ▶   ◀
+# Dots/bullets:                  •   •
+# Diamonds:                      ◆   ◆
+# White diamonds:                ◇   ◇
+# Circles:                       ○   ○
+# Black circles:                 ●   ●
+# Flowers:                       ✿   ✿
+# Cherry blossoms:               ❀   ❀
+# Sparkles:                      ✨   ✨
+# Quotes:                        "   "
+# Typographic quotes:            "   "
+# French quotes (guillemets):    «   »
+# Single guillemets:             ‹   ›
+#
+# REVERSED BRACKETS (RIGHT-TO-LEFT)
+# -------------------------------------------------------------------------------------
+# Reversed Japanese corner:      」  「
+# Reversed white corner:         』  『
+# Reversed double angle:         》  《
+# Reversed black lenticular:     】  【
+# Reversed white lenticular:     〗  〖
+# Reversed square:               ]   [
+# Reversed curly:                }   {
+# Reversed parentheses:          )   (

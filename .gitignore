@@ -1,0 +1,41 @@
+*.bak
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Test and coverage cache
+.pytest_cache/
+.mypy_cache/
+.coverage
+.ruff_cache
+
+# Distribution / packaging
+.Python
+dist/
+build/
+*.egg-info/
+
+# VS Code and editor settings
+.vscode/
+*.swp
+
+# macOS
+.DS_Store
+
+# Virtual environments
+.venv/
+venv/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Poetry
+poetry.lock
+
+# Ignore example output or temp files
+examples/*.tmp

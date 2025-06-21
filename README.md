@@ -30,25 +30,22 @@ Unlike plain Markdown, `mdbub` lets you *structure* your ideas—navigate, fold,
 mdbub tech_idea.mdbub
 ```
 
-Create nodes like this:
+It looks like this:
 
 ```
 【AI-Driven Co...】 > 【Core Concept】 > 【Voice Intera...】
 ● Voice Interaction should be two-way
 └─ No children
-
 ```
+Just start typing to edit the label on a node; or hit **enter** to add a sibling; or hit **tab** to add a child.
 
-Comeback later directly to the node you were working on using a deeplink like this:
-
-```bash
-mdbub tech_idea.mdbub#design/api
-```
+If you add an id in the text, like this: `[id:design/api]`, you can comeback later directly to that node with a deeplink: `mdbub tech_idea.mdbub#design/api`
 
 While you work:
-- Add inlint #tags to make them easier to find or filter.
-- Add inline @key:value maps to track metadata of nodes
-
+- Add inlint `#tags` to make them easier to find or filter
+- Add inline `@key:value` maps to track metadata of nodes
+- Add inline `[id:something]` ids to later link
+ 
 ## 🛠 Installation
 
 ### Quick Install (coming soon)
@@ -70,7 +67,7 @@ While we work on getting into the main package repositories, you can install via
 
 ```bash
 # Development version
-pip install git+https://github.com/YOUR_USERNAME/mdbubbles.git
+pip install git+https://github.com/collabinator/mdbubbles.git
 ```
 ---
 

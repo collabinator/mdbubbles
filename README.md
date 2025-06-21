@@ -45,9 +45,9 @@ Comeback later directly to the node you were working on using a deeplink like th
 mdbub tech_idea.mdbub#design/api
 ```
 
-Tag things like this to make them easier to find or filter:
-
-
+While you work:
+- Add inlint #tags to make them easier to find or filter.
+- Add inline @key:value maps to track metadata of nodes
 
 ## 🛠 Installation
 
@@ -78,9 +78,9 @@ pip install git+https://github.com/YOUR_USERNAME/mdbubbles.git
 
 Want to help shape the future of CLI-based structured thinking?
 
-- [Open issues](https://github.com/collabinator/mdbub/issues)
-- [Start a discussion](https://github.com/collabinator/mdbub/discussions)
-- [Follow the roadmap](https://github.com/collabinator/mdbub/projects)
+- [Open issues](https://github.com/collabinator/mdbubbles/issues)
+- [Start a discussion](https://github.com/collabinator/mdbubbles/discussions)
+- [Follow the roadmap](https://github.com/collabinator/mdbubbles/projects)
 
 ---
 

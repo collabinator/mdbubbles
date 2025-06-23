@@ -2,10 +2,10 @@
 quickmode_config.py - Loads and manages Quick Mode UI configuration (colors, symbols, caps, etc.)
 """
 
+import json
 import os
 import sys
 from pathlib import Path
-import json
 from typing import List, Optional
 
 import toml

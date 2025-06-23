@@ -1,6 +1,6 @@
-from typing import Any, Dict, List, Optional
 import logging
 import time
+from typing import Any, Dict, List, Optional
 
 MAX_NODE_LABEL_LENGTH = 2048  # Maximum allowed characters for a node label
 

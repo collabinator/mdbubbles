@@ -1,12 +1,12 @@
 import typer
 from rich.console import Console
 from rich.table import Table
+
 from mdbub import BUILD_INFO
 from mdbub import __version__ as VERSION
-from mdbub.commands.tag_utils import extract_tags_from_file
-
 from mdbub.commands import about, version
 from mdbub.commands.quick import main as quick_main
+from mdbub.commands.tag_utils import extract_tags_from_file
 
 app = typer.Typer(
     help="""

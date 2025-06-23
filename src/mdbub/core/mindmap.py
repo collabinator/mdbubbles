@@ -88,8 +88,6 @@ class MindMapNode:
         return node
 
 
-
-
 def parse_markdown_to_mindmap(md: str):
     """Parse extended markdown into a MindMapNode tree with metadata.
 

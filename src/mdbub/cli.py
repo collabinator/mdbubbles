@@ -25,6 +25,7 @@ app = typer.Typer(
     invoke_without_command=True,
 )
 
+
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,

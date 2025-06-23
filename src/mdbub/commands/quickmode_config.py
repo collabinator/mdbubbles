@@ -5,6 +5,8 @@ quickmode_config.py - Loads and manages Quick Mode UI configuration (colors, sym
 import os
 import sys
 from pathlib import Path
+import json
+from typing import List, Optional
 
 import toml
 
@@ -74,10 +76,8 @@ QUICKMODE_DEFAULTS = {
 
 CONFIG_FILENAME = "mdbub.toml"
 SESSION_FILENAME = "session.json"
-APPNAME = "mdbub"
 
-import json
-from typing import List, Optional
+APPNAME = "mdbub"
 
 
 def get_session_path() -> Path:

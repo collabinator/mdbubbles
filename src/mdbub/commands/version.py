@@ -52,7 +52,6 @@ def main():
             with open(session_path, "r") as f:
                 session_data = json.load(f)
             last_file = session_data.get("last_file", "-")
-            last_node_path = session_data.get("last_node_path", [])
             typer.echo(f"📝 Session: {session_path}")
             if last_file != "-" and not (
                 Path(last_file).is_file() and os.access(last_file, os.R_OK)

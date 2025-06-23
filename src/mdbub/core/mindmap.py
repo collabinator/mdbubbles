@@ -1,4 +1,6 @@
 from typing import Any, Dict, List, Optional
+import logging
+import time
 
 MAX_NODE_LABEL_LENGTH = 2048  # Maximum allowed characters for a node label
 
@@ -86,8 +88,6 @@ class MindMapNode:
         return node
 
 
-import logging
-import time
 
 
 def parse_markdown_to_mindmap(md: str):
@@ -202,7 +202,6 @@ def mindmap_to_markdown(node: MindMapNode, level=0) -> str:
     """Serialize MindMapNode tree to markdown bullets with metadata."""
     indent = "  " * level
     lines = []
-
     # Build node content with metadata
     content = node.label
 

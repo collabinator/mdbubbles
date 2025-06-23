@@ -5,23 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
+## [0.3.0] - 2025-06-22
 ### Added
-- Initial release setup with automated workflows
+- Beta release: improved stability, packaging, and documentation polish.
 
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [0.1.0] - 2025-06-13
-
 ### Added
 - Initial release of mdbub
 - Quick mode for rapid note capture

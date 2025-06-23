@@ -1,1 +1,0 @@
-# mdbubbles is a full-screen TUI editor for mindmaps

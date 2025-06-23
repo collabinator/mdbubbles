@@ -1,1 +1,0 @@
-# mdbubbles.core package marker

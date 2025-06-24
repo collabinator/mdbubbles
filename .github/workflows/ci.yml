@@ -48,8 +48,11 @@ jobs:
 
       - name: Run linting
         run: |
+          # First, check imports with isort using Black profile
+          poetry run isort --profile=black --check-only .
+          # Then, check formatting with Black
           poetry run black --check .
-          poetry run isort --check-only .
+          # Then, check types
           poetry run mypy src/
 
       - name: Run tests

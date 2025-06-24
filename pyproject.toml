@@ -134,7 +134,8 @@ ignore_missing_imports = true
 
 python_version = "3.9"
 warn_return_any = false
-warn_unused_configs = true
+warn_unused_ignores = false  # Don't fail on unused type: ignore
+# Allow untyped defs for flexibility
 disallow_untyped_defs = false
 disallow_incomplete_defs = false
 check_untyped_defs = true

@@ -83,7 +83,7 @@ pyperclip = "^1.9.0"
 pytest-mock = "^3.14.0"
 pytest-asyncio = "^0.26.0"
 hypothesis = "^6.131.25"
-pytest-cov = "^6.1.1"
+pyinstaller = { version = "^6.14.1", python = ">=3.9,<3.14" }
 pytest-xdist = "^3.6.1"
 pytest-randomly = "^3.16.0"
 pytest-sugar = "^1.0.0"

@@ -132,6 +132,10 @@ disable_error_code = ["no-untyped-call"]
 exclude = '^(tests/|src/mdbub/commands/|src/mdbub/cli.py)'
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "toml"
+ignore_missing_imports = true
+
 python_version = "3.9"
 warn_return_any = false
 warn_unused_ignores = false  # Don't fail on unused type: ignore

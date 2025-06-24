@@ -25,9 +25,9 @@ class MindMapNode:
         self.color = color
         self.icon = icon
         self.metadata = metadata or {}
-        self.parent: Optional[
-            "MindMapNode"
-        ] = None  # Reference to parent node, useful for navigation
+        self.parent: Optional["MindMapNode"] = (
+            None  # Reference to parent node, useful for navigation
+        )
 
     def add_child(self, child: "MindMapNode") -> None:
         self.children.append(child)

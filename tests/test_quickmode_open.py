@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -6,9 +7,9 @@ def test_mdbub_can_open_simplemap() -> None:
     """Test that 'poetry run mdbub' can open examples/mindmaps/simplemap.md without error."""
     test_file = Path(__file__).parent.parent / "examples" / "mindmaps" / "simplemap.md"
     assert test_file.exists(), f"File not found: {test_file}"
-    import sys
-
-    cmd = [sys.executable, "-m", "poetry", "run", "mdbub", str(test_file)]
+    poetry_bin = shutil.which("poetry")
+    assert poetry_bin, "Poetry executable not found in PATH"
+    cmd = [poetry_bin, "run", "mdbub", str(test_file)]
     proc = subprocess.Popen(
         cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )

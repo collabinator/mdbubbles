@@ -98,7 +98,7 @@ poetry version $VERSION
 
 # Ensure local venv is updated with new version
 log_info "Re-installing package in local poetry environment..."
-poetry install
+poetry install --with dev
 
 # Update version info in __init__.py if needed
 # This ensures the version is available at runtime

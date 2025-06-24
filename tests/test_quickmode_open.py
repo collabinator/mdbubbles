@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 
 
-def test_mdbub_can_open_simplemap():
+def test_mdbub_can_open_simplemap() -> None:
     """Test that 'poetry run mdbub' can open examples/mindmaps/simplemap.md without error."""
     test_file = Path(__file__).parent.parent / "examples" / "mindmaps" / "simplemap.md"
     assert test_file.exists(), f"File not found: {test_file}"

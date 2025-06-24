@@ -45,7 +45,7 @@ poetry run python test_label_edit_final.py
 - Shows existing label, tags, and links for editing
 - Use when you want to rewrite the entire node
 
-#### **Insert Mode (`i` key)**  
+#### **Insert Mode (`i` key)**
 - **Append mode**: Adds to the end of existing content
 - Preserves current label, tags, and links
 - Automatically adds a space before your new content
@@ -103,7 +103,7 @@ Reference [[Meeting Notes]] and [[Action Items]]
 - `▶` - Node with children (expandable)
 - `🔗` - Node contains links
 - `(2)` - Child count (right-aligned)
-- **Color coding**: 
+- **Color coding**:
   - Blue: Selected node
   - Bright blue: Nodes with children
   - White: Normal nodes
@@ -209,7 +209,7 @@ poetry run python test_label_edit_final.py  # Shows debug info
 ## 🔮 Coming Soon
 
 - **Node manipulation**: Add/delete/move nodes
-- **Export formats**: PDF, HTML, other mindmap formats  
+- **Export formats**: PDF, HTML, other mindmap formats
 - **Search functionality**: Find nodes by content/tags
 - **Link navigation**: Jump between linked nodes
 - **Undo/redo**: Edit history

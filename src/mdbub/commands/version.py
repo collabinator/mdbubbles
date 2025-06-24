@@ -9,14 +9,14 @@ from mdbub import BUILD_INFO, __version__
 from mdbub.commands.quickmode_config import CONFIG_FILENAME, get_xdg_config_path
 
 
-def main():
+def main() -> None:
     """Print version, build info, and config path."""
     version = __version__
     build_info = BUILD_INFO
 
     # Rich output with more details
     typer.echo("🧠 mdbub - Terminal mindmap tool")
-    typer.echo("Warning: Alpha version - data may be lost, expect bugs!")
+    typer.echo("Warning: Pre-release version - data may be lost, expect bugs!")
     typer.echo(f"Version: {version}")
     typer.echo(f"Build: {build_info}")
     typer.echo(f"Python: {sys.version.split()[0]} ({platform.python_implementation()})")

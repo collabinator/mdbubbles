@@ -1,6 +1,6 @@
 import os
 
-import toml
+import toml  # type: ignore
 
 EXAMPLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
 
@@ -22,7 +22,7 @@ ROLES = [
 SUFFIXES = ["FG", "BG"]
 
 
-def print_theme_colors(toml_path):
+def print_theme_colors(toml_path: str) -> None:
     print(f"\n=== Theme: {os.path.basename(toml_path)} ===")
     config = toml.load(toml_path)
     for role in ROLES:
@@ -36,7 +36,7 @@ def print_theme_colors(toml_path):
     print("\u001b[0m")  # Reset at end
 
 
-def main():
+def main() -> None:
     # Find all .toml files in examples dir
     tomls = [f for f in os.listdir(EXAMPLES_DIR) if f.endswith(".toml")]
     for toml_file in tomls:

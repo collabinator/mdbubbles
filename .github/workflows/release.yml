@@ -148,7 +148,7 @@ jobs:
           prerelease: false
           body: |
             ## Changes in this Release
-            
+
             <!-- Add your release notes here -->
 
       - name: Upload Release Assets
@@ -248,11 +248,11 @@ jobs:
         run: |
           $version = "${{ steps.get_version.outputs.version }}"
           $packagePath = "chocolatey-packages/mdbub"
-          
+
           # Update nuspec file
           $nuspecPath = "$packagePath/mdbub.nuspec"
           (Get-Content $nuspecPath) -replace '<version>.*</version>', "<version>$version</version>" | Set-Content $nuspecPath
-          
+
           # Update install script
           $installPath = "$packagePath/tools/chocolateyinstall.ps1"
           $downloadUrl = "https://github.com/${{ github.repository }}/releases/download/v$version/mdbub-windows.exe"

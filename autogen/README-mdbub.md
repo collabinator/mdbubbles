@@ -1,7 +1,7 @@
 
 # 🧠 mdbub
 
-> A mindmap tool for your terminal.  
+> A mindmap tool for your terminal.
 > Fast. Fluid. Keyboard-native. Built for thinkers who live in the CLI.
 
 ---
@@ -91,9 +91,9 @@ Want to help shape the future of CLI-based structured thinking?
 
 ## 🧠 Built for Thinkers
 
-`mdbub` is for people who think in trees.  
-Who sketch in lists.  
-Who live in the terminal.  
+`mdbub` is for people who think in trees.
+Who sketch in lists.
+Who live in the terminal.
 And who know that a good idea starts fast—and needs space to grow.
 
 ---

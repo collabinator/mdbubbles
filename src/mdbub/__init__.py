@@ -7,13 +7,18 @@ import subprocess
 from datetime import datetime
 from importlib.metadata import PackageNotFoundError, version
 
-try:
-    __version__ = version("mdbub")
-except PackageNotFoundError:
-    __version__ = "unknown"
+__version__ = "0.3.0"
 
 
-def _get_build_info():
+def get_version() -> str:
+    try:
+        __version__ = version("mdbub")
+    except PackageNotFoundError:
+        __version__ = "unknown"
+    return __version__
+
+
+def _get_build_info() -> str:
     """Get comprehensive build information."""
     info_parts = []
 

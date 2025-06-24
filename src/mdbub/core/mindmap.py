@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 MAX_NODE_LABEL_LENGTH = 2048  # Maximum allowed characters for a node label
 
@@ -13,10 +13,11 @@ class MindMapNode:
         color: Optional[str] = None,
         icon: Optional[str] = None,
         metadata: Optional[Dict[str, Any]] = None,
-    ):
+    ) -> None:
         if len(label) > MAX_NODE_LABEL_LENGTH:
             logging.warning(
-                f"[mdbub] Node label exceeded {MAX_NODE_LABEL_LENGTH} chars and was truncated."
+                f"[mdbub] Node label exceeded {MAX_NODE_LABEL_LENGTH} chars and was "
+                "truncated."
             )
             label = label[:MAX_NODE_LABEL_LENGTH] + "... [truncated]"
         self.label = label
@@ -24,20 +25,22 @@ class MindMapNode:
         self.color = color
         self.icon = icon
         self.metadata = metadata or {}
-        self.parent = None  # Reference to parent node, useful for navigation
+        self.parent: Optional[
+            "MindMapNode"
+        ] = None  # Reference to parent node, useful for navigation
 
-    def add_child(self, child: "MindMapNode"):
+    def add_child(self, child: "MindMapNode") -> None:
         self.children.append(child)
         child.parent = self  # Set parent reference
 
-    def add_tag(self, tag: str):
+    def add_tag(self, tag: str) -> None:
         """Add a tag to this node's metadata."""
         if "tags" not in self.metadata:
             self.metadata["tags"] = []
         if isinstance(self.metadata["tags"], list) and tag not in self.metadata["tags"]:
             self.metadata["tags"].append(tag)
 
-    def remove_tag(self, tag: str):
+    def remove_tag(self, tag: str) -> None:
         """Remove a tag from this node's metadata."""
         if "tags" in self.metadata and isinstance(self.metadata["tags"], list):
             if tag in self.metadata["tags"]:
@@ -52,7 +55,7 @@ class MindMapNode:
             return self.metadata["tags"]
         return []
 
-    def set_metadata(self, key: str, value: Any):
+    def set_metadata(self, key: str, value: Any) -> None:
         """Set a metadata key-value pair."""
         self.metadata[key] = value
 
@@ -60,8 +63,8 @@ class MindMapNode:
         """Get a metadata value by key."""
         return self.metadata.get(key, default)
 
-    def to_dict(self):
-        result = {
+    def to_dict(self) -> Dict[str, Any]:
+        result: Dict[str, Any] = {
             "label": self.label,
             "children": [child.to_dict() for child in self.children],
         }
@@ -75,7 +78,7 @@ class MindMapNode:
         return result
 
     @staticmethod
-    def from_dict(data):
+    def from_dict(data: Dict[str, Any]) -> "MindMapNode":
         node = MindMapNode(
             label=data["label"],
             color=data.get("color"),
@@ -88,7 +91,7 @@ class MindMapNode:
         return node
 
 
-def parse_markdown_to_mindmap(md: str):
+def parse_markdown_to_mindmap(md: str) -> MindMapNode:
     """Parse extended markdown into a MindMapNode tree with metadata.
 
     Metadata format supports:
@@ -101,9 +104,9 @@ def parse_markdown_to_mindmap(md: str):
         for line in md.splitlines()
         if line.strip() and not line.startswith("<!-- mdbub-format")
     ]
-    top_nodes = []  # List of (label, metadata, children_lines, indent)
-    stack = []
-    # prev_indent = None  # Removed unused variable
+    # NOTE: Loosen annotation for release: mypy cannot handle recursive tuple type here.
+    top_nodes: List[Any] = []  # List of (label, metadata, children_tuples, indent)
+    stack: List[Any] = []  # Stack for parent tracking
 
     logging.info(f"[mdbub] Parsing {len(lines)} lines from markdown...")
     for line in lines:
@@ -127,7 +130,10 @@ def parse_markdown_to_mindmap(md: str):
                 stack[-1][2].append((label, metadata, [], indent))
                 stack.append(stack[-1][2][-1])
 
-    def build_tree(node_tuple, depth=0):
+    def build_tree(
+        node_tuple: Any,  # TODO: Recursive tuple type; loosened for mypy compatibility
+        depth: int = 0,
+    ) -> MindMapNode:
         label, metadata, children_tuples, _ = node_tuple
         if len(label) > MAX_NODE_LABEL_LENGTH:
             logging.warning(
@@ -155,7 +161,11 @@ def parse_markdown_to_mindmap(md: str):
         root = MindMapNode("SYNTHETIC ROOT")
         for node_tuple in top_nodes:
             root.add_child(build_tree(node_tuple))
-        root._multi_root_warning = True  # Custom attribute to signal warning
+
+        def warn_multi_root() -> None:
+            root._multi_root_warning = True  # type: ignore[attr-defined]  # Custom attribute to signal warning
+
+        warn_multi_root()
         result = root
     else:
         result = MindMapNode("")  # Empty mindmap
@@ -164,7 +174,7 @@ def parse_markdown_to_mindmap(md: str):
     return result
 
 
-def _parse_node_metadata(content: str):
+def _parse_node_metadata(content: str) -> Tuple[str, Dict[str, Any]]:
     """Parse node metadata from content string.
 
     Returns:
@@ -196,7 +206,7 @@ def _parse_node_metadata(content: str):
     return label, metadata
 
 
-def mindmap_to_markdown(node: MindMapNode, level=0) -> str:
+def mindmap_to_markdown(node: "MindMapNode", level: int = 0) -> str:
     """Serialize MindMapNode tree to markdown bullets with metadata."""
     indent = "  " * level
     lines = []

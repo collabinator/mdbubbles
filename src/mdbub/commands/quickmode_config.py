@@ -6,9 +6,9 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
-import toml
+import toml  # type: ignore
 
 # Default UI constants
 QUICKMODE_DEFAULTS = {
@@ -96,19 +96,25 @@ def save_session(last_file: str, last_node_path: List[int]) -> None:
         with open(session_path, "w", encoding="utf-8") as f:
             json.dump(session, f)
     except Exception as e:
-        print(f"[mdbub] Failed to save session: {e}", file=sys.stderr)
+        print(
+            f"[mdbub] Failed to save session: {e}",
+            file=sys.stderr,
+        )
 
 
-def load_session() -> Optional[dict]:
+def load_session() -> Optional[Dict[str, Any]]:
     """Load the last session from the session file, if it exists."""
     session_path = get_session_path()
     if session_path.exists():
         try:
             with open(session_path, "r", encoding="utf-8") as f:
-                session = json.load(f)
-            return session
+                session: Dict[str, Any] = json.load(f)
+                return session
         except Exception as e:
-            print(f"[mdbub] Failed to load session: {e}", file=sys.stderr)
+            print(
+                f"[mdbub] Failed to load session: {e}",
+                file=sys.stderr,
+            )
     return None
 
 
@@ -120,16 +126,16 @@ def get_xdg_config_path() -> Path:
     return Path.home() / ".config" / APPNAME
 
 
-def load_quickmode_config() -> dict:
+def load_quickmode_config() -> Dict[str, Any]:
     config_dir = get_xdg_config_path()
     config_path = config_dir / CONFIG_FILENAME
-    config = QUICKMODE_DEFAULTS.copy()
+    config: Dict[str, Any] = QUICKMODE_DEFAULTS.copy()
     if config_path.exists():
         try:
-            user_cfg = toml.load(config_path)
+            user_cfg: Dict[str, Any] = toml.load(config_path)
             for k, v in user_cfg.items():
                 if k in config:
                     config[k] = v
         except Exception as e:
             print(f"[mdbub] Failed to load quickmode config: {e}", file=sys.stderr)
-    return config
+    return config  # Always return a dict, never None

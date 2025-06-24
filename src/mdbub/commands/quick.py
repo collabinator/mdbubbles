@@ -11,7 +11,7 @@ import threading
 import time
 import tty
 from dataclasses import dataclass, field
-from typing import List, Optional, TextIO, Tuple
+from typing import Any, Dict, List, Optional, TextIO, Tuple
 
 from rich.console import Console
 from rich.text import Text
@@ -23,72 +23,62 @@ from mdbub.commands.quickmode_config import (
     save_session,
 )
 from mdbub.core.mindmap import MindMapNode as Node
-from mdbub.core.mindmap import (
-    mindmap_to_markdown,
-    parse_markdown_to_mindmap,
-)
+from mdbub.core.mindmap import mindmap_to_markdown, parse_markdown_to_mindmap
 
-CONFIG = load_quickmode_config()
+CONFIG: Dict[str, Any] = load_quickmode_config()
 
 # Load all color constants directly from _FG/_BG keys (no legacy support)
-COLOR_PRINTS_ACCENT_FG = CONFIG.get("COLOR_PRINTS_ACCENT_FG", "\u001b[36m")
-COLOR_PRINTS_ACCENT_BG = CONFIG.get("COLOR_PRINTS_ACCENT_BG", "")
-COLOR_PRINTS_HIGHLIGHT_FG = CONFIG.get("COLOR_PRINTS_HIGHLIGHT_FG", "")
-COLOR_PRINTS_HIGHLIGHT_BG = CONFIG.get("COLOR_PRINTS_HIGHLIGHT_BG", "\u001b[44m")
-COLOR_PRINTS_TEXT_FG = CONFIG.get("COLOR_PRINTS_TEXT_FG", "\u001b[97m")
-COLOR_PRINTS_TEXT_BG = CONFIG.get("COLOR_PRINTS_TEXT_BG", "")
-COLOR_PRINTS_DIM_FG = CONFIG.get("COLOR_PRINTS_DIM_FG", "\u001b[90m")
-COLOR_PRINTS_DIM_BG = CONFIG.get("COLOR_PRINTS_DIM_BG", "")
-
-COLOR_PRINTS_WARNING_FG = CONFIG.get("COLOR_PRINTS_WARNING_FG", "\u001b[33m")
-COLOR_PRINTS_WARNING_BG = CONFIG.get("COLOR_PRINTS_WARNING_BG", "")
-COLOR_PRINTS_SUCCESS_FG = CONFIG.get("COLOR_PRINTS_SUCCESS_FG", "\u001b[32m")
-COLOR_PRINTS_SUCCESS_BG = CONFIG.get("COLOR_PRINTS_SUCCESS_BG", "")
-COLOR_PRINTS_ERROR_FG = CONFIG.get("COLOR_PRINTS_ERROR_FG", "\u001b[31m")
-COLOR_PRINTS_ERROR_BG = CONFIG.get("COLOR_PRINTS_ERROR_BG", "")
-COLOR_PRINTS_STATUS_BAR_FG = CONFIG.get("COLOR_PRINTS_STATUS_BAR_FG", "\u001b[93m")
-COLOR_PRINTS_STATUS_BAR_BG = CONFIG.get("COLOR_PRINTS_STATUS_BAR_BG", "")
-COLOR_PRINTS_BREADCRUMB_BAR_FG = CONFIG.get(
-    "COLOR_PRINTS_BREADCRUMB_BAR_FG", "\u001b[36m"
-)
-COLOR_PRINTS_BREADCRUMB_BAR_BG = CONFIG.get("COLOR_PRINTS_BREADCRUMB_BAR_BG", "")
-COLOR_PRINTS_CHILD_HIGHLIGHT_FG = CONFIG.get(
-    "COLOR_PRINTS_CHILD_HIGHLIGHT_FG", "\u001b[90m"
-)
-COLOR_PRINTS_CHILD_HIGHLIGHT_BG = CONFIG.get("COLOR_PRINTS_CHILD_HIGHLIGHT_BG", "")
+COLOR_PRINTS_ACCENT_FG = CONFIG["COLOR_PRINTS_ACCENT_FG"]
+COLOR_PRINTS_ACCENT_BG = CONFIG["COLOR_PRINTS_ACCENT_BG"]
+COLOR_PRINTS_HIGHLIGHT_FG = CONFIG["COLOR_PRINTS_HIGHLIGHT_FG"]
+COLOR_PRINTS_HIGHLIGHT_BG = CONFIG["COLOR_PRINTS_HIGHLIGHT_BG"]
+COLOR_PRINTS_TEXT_FG = CONFIG["COLOR_PRINTS_TEXT_FG"]
+COLOR_PRINTS_TEXT_BG = CONFIG["COLOR_PRINTS_TEXT_BG"]
+COLOR_PRINTS_DIM_FG = CONFIG["COLOR_PRINTS_DIM_FG"]
+COLOR_PRINTS_DIM_BG = CONFIG["COLOR_PRINTS_DIM_BG"]
+COLOR_PRINTS_WARNING_FG = CONFIG["COLOR_PRINTS_WARNING_FG"]
+COLOR_PRINTS_WARNING_BG = CONFIG["COLOR_PRINTS_WARNING_BG"]
+COLOR_PRINTS_SUCCESS_FG = CONFIG["COLOR_PRINTS_SUCCESS_FG"]
+COLOR_PRINTS_SUCCESS_BG = CONFIG["COLOR_PRINTS_SUCCESS_BG"]
+COLOR_PRINTS_ERROR_FG = CONFIG["COLOR_PRINTS_ERROR_FG"]
+COLOR_PRINTS_ERROR_BG = CONFIG["COLOR_PRINTS_ERROR_BG"]
+COLOR_PRINTS_STATUS_BAR_FG = CONFIG["COLOR_PRINTS_STATUS_BAR_FG"]
+COLOR_PRINTS_STATUS_BAR_BG = CONFIG["COLOR_PRINTS_STATUS_BAR_BG"]
+COLOR_PRINTS_BREADCRUMB_BAR_FG = CONFIG["COLOR_PRINTS_BREADCRUMB_BAR_FG"]
+COLOR_PRINTS_BREADCRUMB_BAR_BG = CONFIG["COLOR_PRINTS_BREADCRUMB_BAR_BG"]
+COLOR_PRINTS_CHILD_HIGHLIGHT_FG = CONFIG["COLOR_PRINTS_CHILD_HIGHLIGHT_FG"]
+COLOR_PRINTS_CHILD_HIGHLIGHT_BG = CONFIG["COLOR_PRINTS_CHILD_HIGHLIGHT_BG"]
 COLOR_PRINTS_CLEAR = CONFIG["COLOR_PRINTS_CLEAR"]  # Clear screen
 COLOR_PRINTS_RESET = CONFIG["COLOR_PRINTS_RESET"]  # Reset
 COLOR_PRINTS_BLINK = CONFIG["COLOR_PRINTS_BLINK"]  # Rich blink style (not ANSI)
-
-STATUS_MESSAGE_TIMEOUT_SHORT = CONFIG["STATUS_MESSAGE_TIMEOUT_SHORT"]
-STATUS_MESSAGE_TIMEOUT = CONFIG["STATUS_MESSAGE_TIMEOUT"]
-STATUS_MESSAGE_TIMEOUT_LONG = CONFIG["STATUS_MESSAGE_TIMEOUT_LONG"]
-MAX_VISIBLE_CHILDREN = CONFIG["MAX_VISIBLE_CHILDREN"]
-MAX_NODE_LABEL_VIZ_LENGTH = CONFIG["MAX_NODE_LABEL_VIZ_LENGTH"]
-MAX_BREADCRUMB_NODE_VIZ_LENGTH = CONFIG["MAX_BREADCRUMB_NODE_VIZ_LENGTH"]
-MAX_CHILDNODE_VIZ_LENGTH = CONFIG["MAX_CHILDNODE_VIZ_LENGTH"]
-COLOR_BREADCRUMBS = CONFIG["COLOR_BREADCRUMBS"]
-COLOR_BREADCRUMBS_ROOT = CONFIG["COLOR_BREADCRUMBS_ROOT"]
-COLOR_BREADCRUMBS_CURRENT = CONFIG["COLOR_BREADCRUMBS_CURRENT"]
-COLOR_CURRENT_NODE = CONFIG["COLOR_CURRENT_NODE"]
-COLOR_SELECTED_CHILD = CONFIG["COLOR_SELECTED_CHILD"]
-COLOR_CHILD = CONFIG["COLOR_CHILD"]
-COLOR_PAGINATION = CONFIG["COLOR_PAGINATION"]
-COLOR_POSITION = CONFIG["COLOR_POSITION"]
-COLOR_STATUS = CONFIG["COLOR_STATUS"]
-COLOR_HOTKEYS = CONFIG["COLOR_HOTKEYS"]
-COLOR_ERROR = CONFIG["COLOR_ERROR"]
-
-COLOR_SUCCESS = CONFIG["COLOR_SUCCESS"]
-SYMBOL_BULLET = CONFIG["SYMBOL_BULLET"]
-SYMBOL_BRANCH = CONFIG["SYMBOL_BRANCH"]
-SYMBOL_ROOT = CONFIG["SYMBOL_ROOT"]
-SYMBOL_MORE_LEFT = CONFIG["SYMBOL_MORE_LEFT"]
-SYMBOL_MORE_RIGHT = CONFIG["SYMBOL_MORE_RIGHT"]
-SYMBOL_CHILDNODE_OPENWRAP = CONFIG["SYMBOL_CHILDNODE_OPENWRAP"]
-SYMBOL_CHILDNODE_CLOSEWRAP = CONFIG["SYMBOL_CHILDNODE_CLOSEWRAP"]
-SYMBOL_BREADCRUMBNODE_OPENWRAP = CONFIG["SYMBOL_BREADCRUMBNODE_OPENWRAP"]
-SYMBOL_BREADCRUMBNODE_CLOSEWRAP = CONFIG["SYMBOL_BREADCRUMBNODE_CLOSEWRAP"]
+STATUS_MESSAGE_TIMEOUT_SHORT = float(CONFIG["STATUS_MESSAGE_TIMEOUT_SHORT"])
+STATUS_MESSAGE_TIMEOUT = float(CONFIG["STATUS_MESSAGE_TIMEOUT"])
+STATUS_MESSAGE_TIMEOUT_LONG = float(CONFIG["STATUS_MESSAGE_TIMEOUT_LONG"])
+MAX_VISIBLE_CHILDREN = int(CONFIG["MAX_VISIBLE_CHILDREN"])
+MAX_NODE_LABEL_VIZ_LENGTH = int(CONFIG["MAX_NODE_LABEL_VIZ_LENGTH"])
+MAX_BREADCRUMB_NODE_VIZ_LENGTH = int(CONFIG["MAX_BREADCRUMB_NODE_VIZ_LENGTH"])
+MAX_CHILDNODE_VIZ_LENGTH = int(CONFIG["MAX_CHILDNODE_VIZ_LENGTH"])
+COLOR_BREADCRUMBS = str(CONFIG["COLOR_BREADCRUMBS"])
+COLOR_BREADCRUMBS_ROOT = str(CONFIG["COLOR_BREADCRUMBS_ROOT"])
+COLOR_BREADCRUMBS_CURRENT = str(CONFIG["COLOR_BREADCRUMBS_CURRENT"])
+COLOR_CURRENT_NODE = str(CONFIG["COLOR_CURRENT_NODE"])
+COLOR_SELECTED_CHILD = str(CONFIG["COLOR_SELECTED_CHILD"])
+COLOR_CHILD = str(CONFIG["COLOR_CHILD"])
+COLOR_PAGINATION = str(CONFIG["COLOR_PAGINATION"])
+COLOR_POSITION = str(CONFIG["COLOR_POSITION"])
+COLOR_STATUS = str(CONFIG["COLOR_STATUS"])
+COLOR_HOTKEYS = str(CONFIG["COLOR_HOTKEYS"])
+COLOR_ERROR = str(CONFIG["COLOR_ERROR"])
+COLOR_SUCCESS = str(CONFIG["COLOR_SUCCESS"])
+SYMBOL_BULLET = str(CONFIG["SYMBOL_BULLET"])
+SYMBOL_BRANCH = str(CONFIG["SYMBOL_BRANCH"])
+SYMBOL_ROOT = str(CONFIG["SYMBOL_ROOT"])
+SYMBOL_MORE_LEFT = str(CONFIG["SYMBOL_MORE_LEFT"])
+SYMBOL_MORE_RIGHT = str(CONFIG["SYMBOL_MORE_RIGHT"])
+SYMBOL_CHILDNODE_OPENWRAP = str(CONFIG["SYMBOL_CHILDNODE_OPENWRAP"])
+SYMBOL_CHILDNODE_CLOSEWRAP = str(CONFIG["SYMBOL_CHILDNODE_CLOSEWRAP"])
+SYMBOL_BREADCRUMBNODE_OPENWRAP = str(CONFIG["SYMBOL_BREADCRUMBNODE_OPENWRAP"])
+SYMBOL_BREADCRUMBNODE_CLOSEWRAP = str(CONFIG["SYMBOL_BREADCRUMBNODE_CLOSEWRAP"])
 
 # UI states
 STATE_READY = "Ready"
@@ -110,7 +100,8 @@ class QuickModeUI:
 
     def get_term_size(self) -> Tuple[int, int]:
         """Get current terminal dimensions."""
-        return self.console.size
+        # Cast to Tuple[int, int] for mypy
+        return tuple(self.console.size)  # type: ignore
 
     def render_breadcrumbs(self) -> Text:
         """Render the breadcrumb navigation showing the path to current node."""
@@ -132,7 +123,7 @@ class QuickModeUI:
                 path_segments.append(node.label)
 
         # Helper function to truncate long node names
-        def truncate_node_name(name):
+        def truncate_node_name(name: str) -> str:
             if len(name) > MAX_BREADCRUMB_NODE_VIZ_LENGTH:
                 return name[: MAX_BREADCRUMB_NODE_VIZ_LENGTH - 3] + "..."
             return name
@@ -235,7 +226,7 @@ class QuickModeUI:
             text.append("< ", style=COLOR_PAGINATION)
 
         # Helper function to truncate long node names
-        def truncate_child_name(name):
+        def truncate_child_name(name: str) -> str:
             if len(name) > MAX_CHILDNODE_VIZ_LENGTH:
                 return name[: MAX_CHILDNODE_VIZ_LENGTH - 3] + "..."
             return name
@@ -966,7 +957,7 @@ KEY_CTRL_I = "\x09"
 #     return True
 
 
-def get_key(timeout=1.0) -> str:
+def get_key(timeout: float = 1.0) -> str:
     """Get a single keypress from terminal, handling special keys like arrows.
 
     Args:
@@ -1060,7 +1051,9 @@ def auto_save(state: QuickModeState, file: TextIO) -> None:
         time.sleep(2)
 
 
-def main(file: TextIO, version: str, build_info: str, deep_link_path=None) -> int:
+def main(
+    file: TextIO, version: str, build_info: str, deep_link_path: Optional[str] = None
+) -> int:
     """Main entry point for quick mode with session restore support."""
     import os
 
@@ -1111,7 +1104,7 @@ def main(file: TextIO, version: str, build_info: str, deep_link_path=None) -> in
             try:
                 path = session["last_node_path"]
                 node = mindmap
-                for idx in path:
+                for i, idx in enumerate(path):
                     if 0 <= idx < len(node.children):
                         node = node.children[idx]
                     else:
@@ -1123,13 +1116,16 @@ def main(file: TextIO, version: str, build_info: str, deep_link_path=None) -> in
                 state.selected_index = 0
 
         # Anchor-style deep link: search for label containing [id:path/to/me]
-        def find_node_with_anchor(root, anchor):
-            stack = [(root, [])]  # (node, path)
-            anchor_str = f"[id:{'/'.join(anchor)}]"
+        def find_node_with_anchor(root: Node, anchor: str) -> Optional[List[int]]:
+            stack: List[Any] = [(root, [])]  # Start with root node and empty path
+            anchor_str = f"[id:{anchor}]"
             while stack:
                 node, path = stack.pop()
                 if anchor_str in node.label:
-                    return path
+                    if isinstance(path, list) and all(isinstance(i, int) for i in path):
+                        return path
+                    else:
+                        return None
                 for idx, child in enumerate(node.children):
                     stack.append((child, path + [idx]))
             return None
@@ -1166,7 +1162,7 @@ def main(file: TextIO, version: str, build_info: str, deep_link_path=None) -> in
         autosave_thread.start()
 
         # Set up signal handler for clean exit
-        def handle_sigint(sig, frame):
+        def handle_sigint(sig: int, frame: Any) -> None:
             state.should_quit = True
             return
 
@@ -1205,7 +1201,7 @@ def main(file: TextIO, version: str, build_info: str, deep_link_path=None) -> in
                     # Remove the current node from the breadcrumb (last element)
 
                     # Truncate long node names
-                    def truncate_node_name(name):
+                    def truncate_node_name(name: str) -> str:
                         if len(name) > MAX_BREADCRUMB_NODE_VIZ_LENGTH:
                             return name[: MAX_BREADCRUMB_NODE_VIZ_LENGTH - 3] + "..."
                         return name
@@ -1225,7 +1221,7 @@ def main(file: TextIO, version: str, build_info: str, deep_link_path=None) -> in
                             )  # -4 because we show root, first, parent and current
 
                             # Truncate long node names
-                            def truncate_node_name(name):
+                            def truncate_node_name(name: str) -> str:
                                 if len(name) > MAX_BREADCRUMB_NODE_VIZ_LENGTH:
                                     return (
                                         name[: MAX_BREADCRUMB_NODE_VIZ_LENGTH - 3]
@@ -1288,7 +1284,7 @@ def main(file: TextIO, version: str, build_info: str, deep_link_path=None) -> in
                         child_text += "< "
 
                     # Helper function to truncate long child names
-                    def truncate_child_name(name):
+                    def truncate_child_name(name: str) -> str:
                         if len(name) > MAX_CHILDNODE_VIZ_LENGTH:
                             return name[: MAX_CHILDNODE_VIZ_LENGTH - 3] + "..."
                         return name

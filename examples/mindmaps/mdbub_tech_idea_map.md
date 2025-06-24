@@ -10,9 +10,10 @@
   - User Personas
     - Busy Professionals
     - Are the parents #here?
-    - Athletes #cool
+    - Athletes are #cool
       - Athletes detail idea 1
       - Athletes detail idea 2
+      - Athletes subchild 3
     - Health-Conscious Eaters
       - Health-Conscious Eaters detail idea 1
   - Feature Set
@@ -29,7 +30,7 @@
     - Social Sharing
     - Smart Timer
   - Technical Stack
-    - Frontend
+    - Frontend [id:tech/frontend]
       - React Native
       - Cross-platform UI
       - Dark Mode

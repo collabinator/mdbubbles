@@ -228,4 +228,3 @@ My Project Roadmap
 5. **Plugin API:** Define entry-point hooks for custom commands, serializers, and integrations.
 6. **Packaging & Distribution:** Publish to PyPI, Homebrew formula, and optionally Snap/Chocolatey.
 7. **Feedback Loop:** Demo to users, gather insights, iterate on performance optimizations (virtualized rendering for large maps).
-

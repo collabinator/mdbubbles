@@ -1,7 +1,7 @@
 
 # 🧠 mdbub
 
-> A mindmap tool for your terminal.  
+> A mindmap tool for your terminal.
 > Fast. Fluid. Keyboard-native. Built for thinkers who live in the CLI.
 
 ---
@@ -42,10 +42,10 @@ Just start typing to edit the label on a node; or hit **enter** to add a sibling
 If you add an id in the text, like this: `[id:design/api]`, you can comeback later directly to that node with a deeplink: `mdbub tech_idea.mdbub#design/api`
 
 While you work:
-- Add inlint `#tags` to make them easier to find or filter
+- Add inline `#tags` to make them easier to find or filter
 - Add inline `@key:value` maps to track metadata of nodes
 - Add inline `[id:something]` ids to later link
- 
+
 ## 🛠 Installation
 
 ### Quick Install (coming soon)
@@ -83,9 +83,9 @@ Want to help shape the future of CLI-based structured thinking?
 
 ## 🧠 Built for Thinkers
 
-`mdbub` is for people who think in trees.  
-Who sketch in lists.  
-Who live in the terminal.  
+`mdbub` is for people who think in trees.
+Who sketch in lists.
+Who live in the terminal.
 And who know that a good idea starts fast—and needs space to grow.
 
 

@@ -124,7 +124,7 @@ class Mdbub < Formula
   test do
     # Test that the binary works
     assert_match version.to_s, shell_output("#{bin}/mdbub version")
-    
+
     # Test basic functionality
     (testpath/"test.md").write("+ Test mindmap\n  > Sub item")
     assert_match "Test mindmap", shell_output("#{bin}/mdbub view #{testpath}/test.md")

@@ -79,6 +79,27 @@ if ! poetry run pytest tests/ -v; then
     exit 1
 fi
 
+# Run pre-commit hooks on all files
+log_info "Running pre-commit hooks..."
+if ! poetry run pre-commit run --all-files; then
+    log_error "pre-commit failed. Please fix the issues above before releasing."
+    exit 1
+fi
+
+# Run mypy type checks
+log_info "Running mypy type checks..."
+if ! poetry run mypy .; then
+    log_error "mypy type checks failed. Please fix the issues above before releasing."
+    exit 1
+fi
+
+# Run ruff lint checks
+log_info "Running ruff lint checks..."
+if ! poetry run ruff check .; then
+    log_error "ruff lint checks failed. Please fix the issues above before releasing."
+    exit 1
+fi
+
 # Run linting
 log_info "Running linting checks..."
 if ! poetry run black --check .; then

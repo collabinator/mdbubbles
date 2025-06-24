@@ -3,7 +3,7 @@
 **Date:** 2025-06-22
 
 ## Overview
-This document tracks the steps, notes, and checklist for the v0.3.0b0 beta release.
+This document tracks the steps, notes, and checklist for the v0.3.0 beta release.
 
 ## Steps
 - [x] Audit packaging and metadata

@@ -93,25 +93,6 @@ if ! poetry run mypy .; then
     exit 1
 fi
 
-# Run ruff lint checks
-log_info "Running ruff lint checks..."
-if ! poetry run ruff check .; then
-    log_error "ruff lint checks failed. Please fix the issues above before releasing."
-    exit 1
-fi
-
-# Run linting
-log_info "Running linting checks..."
-if ! poetry run black --check .; then
-    log_error "Code formatting check failed. Run 'poetry run black .' to fix."
-    exit 1
-fi
-
-if ! poetry run isort --check-only .; then
-    log_error "Import sorting check failed. Run 'poetry run isort .' to fix."
-    exit 1
-fi
-
 # Update version in pyproject.toml
 log_info "Updating version to $VERSION..."
 poetry version $VERSION

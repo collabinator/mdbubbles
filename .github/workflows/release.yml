@@ -117,7 +117,7 @@ jobs:
           poetry run pyinstaller --onefile --name mdbub-${{ matrix.platform }} src/mdbub/cli.py
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: builds-${{ matrix.platform }}
           path: |

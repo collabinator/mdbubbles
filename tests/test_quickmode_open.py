@@ -1,6 +1,15 @@
 import shutil
 import subprocess
+import sys
 from pathlib import Path
+
+import pytest
+
+poetry_bin = shutil.which("poetry")
+pytestmark = pytest.mark.skipif(
+    sys.platform.startswith("win") or not poetry_bin,
+    reason="Poetry subprocess not supported on Windows CI or Poetry not found in PATH",
+)
 
 
 def test_mdbub_can_open_simplemap() -> None:

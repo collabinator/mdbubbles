@@ -57,15 +57,14 @@ jobs:
 
       - name: Run linting
         run: |
-          # First, check imports with isort using Black profile (non-blocking)
           poetry run isort --profile=black --check-only . || true
-          # Then, check formatting with Black (non-blocking)
           poetry run black --check . || true
-          # Then, check types with mypy (non-blocking)
           poetry run mypy src/ || true
+        shell: bash
 
       - name: Run tests
         run: poetry run pytest tests/ -v --cov=src/mdbub --cov-report=xml
+        shell: bash
 
 
   lint:

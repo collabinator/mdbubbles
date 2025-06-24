@@ -103,22 +103,22 @@ jobs:
       - name: Update version in pyproject.toml
         run: |
           poetry version ${{ steps.get_version.outputs.version }}
-          shell: bash
+        shell: bash
 
       - name: Build wheel and sdist
         run: |
           poetry build
-          shell: bash
+        shell: bash
 
       - name: Install PyInstaller
         run: |
           poetry add --group dev pyinstaller
-          shell: bash
+        shell: bash
 
       - name: Build standalone executable
         run: |
           poetry run pyinstaller --onefile --name mdbub-${{ matrix.platform }} src/mdbub/cli.py
-          shell: bash
+        shell: bash
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

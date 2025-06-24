@@ -128,7 +128,7 @@ known_first_party = ["mdbub"]
 ignore = ["E501"]
 
 [tool.mypy]
-disable_error_code = ["no-untyped-call", "unused-ignore"]
+disable_error_code = ["no-untyped-call"]
 exclude = '^(tests/|src/mdbub/commands/|src/mdbub/cli.py)'
 ignore_missing_imports = true
 

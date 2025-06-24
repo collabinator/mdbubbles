@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import toml  # type: ignore
+import toml
 
 # Default UI constants
 QUICKMODE_DEFAULTS = {

@@ -1,6 +1,6 @@
 import os
 
-import toml  # type: ignore
+import toml
 
 EXAMPLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
 

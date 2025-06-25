@@ -243,42 +243,20 @@ jobs:
   update-chocolatey:
     needs: [release, publish-pypi]
     runs-on: windows-latest
+    if: vars.CHOCOLATEY_PUBLISH_ENABLED == 'true'  # Only run if publishing to Chocolatey is enabled
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository_owner }}/chocolatey-packages
-          token: ${{ secrets.CHOCOLATEY_REPO_TOKEN }}
-          path: chocolatey-packages
-
-      - name: Get version
-        id: get_version
-        shell: bash
+      - name: Find built nupkg
+        id: find_nupkg
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-          fi
+          $pkg = Get-ChildItem -Path . -Recurse -Filter "mdbub.*.nupkg" | Select-Object -First 1
+          if ($null -eq $pkg) { Write-Error "No .nupkg file found!"; exit 1 }
+          echo "::set-output name=path::$($pkg.FullName)"
+        shell: pwsh
 
-      - name: Update Chocolatey package
-        shell: powershell
-        run: |
-          $version = "${{ steps.get_version.outputs.version }}"
-          $packagePath = "chocolatey-packages/mdbub"
+      - name: Push to Chocolatey
+        run: choco push ${{ steps.find_nupkg.outputs.path }} --api-key ${{ secrets.CHOCOLATEY_REPO_TOKEN }} --source https://push.chocolatey.org/
+        shell: pwsh
 
-          # Update nuspec file
-          $nuspecPath = "$packagePath/mdbub.nuspec"
-          (Get-Content $nuspecPath) -replace '<version>.*</version>', "<version>$version</version>" | Set-Content $nuspecPath
-
-          # Update install script
-          $installPath = "$packagePath/tools/chocolateyinstall.ps1"
-          $downloadUrl = "https://github.com/${{ github.repository }}/releases/download/v$version/mdbub-windows.exe"
-          (Get-Content $installPath) -replace '\$url\s*=\s*"[^"]*"', "`$url = `"$downloadUrl`"" | Set-Content $installPath
-
-      - name: Commit and push changes
-        shell: bash
-        working-directory: chocolatey-packages
-        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .

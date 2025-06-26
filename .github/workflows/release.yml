@@ -256,9 +256,3 @@ jobs:
       - name: Push to Chocolatey
         run: choco push ${{ steps.find_nupkg.outputs.path }} --api-key ${{ secrets.CHOCOLATEY_REPO_TOKEN }} --source https://push.chocolatey.org/
         shell: pwsh
-
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -m "Update mdbub to version ${{ steps.get_version.outputs.version }}"
-          git push

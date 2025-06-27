@@ -54,7 +54,7 @@ jobs:
         shell: bash
 
       - name: Install project
-        run: poetry install --no-interaction
+        run: poetry install --no-interaction --with dev
         shell: bash
 
       - name: Run tests

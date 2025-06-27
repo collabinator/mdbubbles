@@ -5,13 +5,13 @@ from pathlib import Path
 
 import typer
 
-from mdbub import BUILD_INFO, __version__
+from mdbub import BUILD_INFO, get_version
 from mdbub.commands.quickmode_config import CONFIG_FILENAME, get_xdg_config_path
 
 
 def main() -> None:
     """Print version, build info, and config path."""
-    version = __version__
+    version = get_version()
     build_info = BUILD_INFO
 
     # Rich output with more details

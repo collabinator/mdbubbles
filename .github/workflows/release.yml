@@ -250,7 +250,8 @@ jobs:
         run: |
           $pkg = Get-ChildItem -Path . -Recurse -Filter "mdbub.*.nupkg" | Select-Object -First 1
           if ($null -eq $pkg) { Write-Error "No .nupkg file found!"; exit 1 }
-          echo "::set-output name=path::$($pkg.FullName)"
+          "$env:GITHUB_OUTPUT" | Out-File -Append -Encoding utf8
+          echo "path=$($pkg.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
         shell: pwsh
 
       - name: Push to Chocolatey

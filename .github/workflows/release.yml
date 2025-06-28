@@ -192,6 +192,9 @@ jobs:
         run: poetry version ${{ steps.get_version.outputs.version }}
         shell: bash
 
+      - name: Install PyInstaller
+        run: poetry install --with dev
+
       - name: Build package
         run: poetry build
         shell: bash
@@ -216,6 +219,39 @@ jobs:
           else
             echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
             echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout tap repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: tap-repo
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install homebrew-pypi-poet
+        run: |
+          pip install homebrew-pypi-poet
+
+      - name: Generate Homebrew resource blocks
+        run: |
+          poet mdbub > tap-repo/Formula/mdbub_resources.rb
+
+      - name: Commit and push Homebrew resource updates
+        run: |
+          cd tap-repo
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add Formula/mdbub_resources.rb
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Python dependencies for mdbub formula"
+            git push
+          else
+            echo "No changes to commit."
           fi
 
       - name: Update Homebrew formula

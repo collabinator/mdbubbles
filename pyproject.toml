@@ -49,6 +49,7 @@ tomli = "^2.2.1"
 typer = "^0.15.4"
 
 [tool.poetry.group.dev.dependencies]
+pyinstaller = "^6.14.1"
 black = "^25.1.0"
 isort = "^6.0.1"
 mypy = "^1.15.0"
@@ -59,7 +60,6 @@ toml = "^0.10.2"
 ruff = "^0.11.13"
 twine = "^5.0.0"
 types-toml = "^0.10.8.20240310"
-pyinstaller = "^6.14.1"
 
 
 [tool.black]

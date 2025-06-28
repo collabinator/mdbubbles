@@ -41,13 +41,6 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: latest
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --with dev --no-root
@@ -108,11 +101,6 @@ jobs:
       - name: Build wheel and sdist
         run: |
           poetry build
-        shell: bash
-
-      - name: Install PyInstaller
-        run: |
-          poetry add --group dev pyinstaller
         shell: bash
 
       - name: Build standalone executable
@@ -239,6 +227,17 @@ jobs:
           download-url: https://github.com/${{ github.repository }}/archive/refs/tags/${{ steps.get_version.outputs.tag_name }}.tar.gz
         env:
           COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+
+  homebrew-test:
+    needs: update-homebrew
+    runs-on: macos-latest
+    steps:
+      - name: Install from Homebrew Tap
+        run: |
+          brew tap ${{ github.repository_owner }}/homebrew-tap
+          brew install mdbub
+          mdbub version
+
 
   update-chocolatey:
     needs: [release, publish-pypi]

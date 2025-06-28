@@ -30,8 +30,7 @@ jobs:
 
       - name: Generate Homebrew resource blocks
         run: |
-          poet click markdown markdown-it-py packaging platformdirs prompt-toolkit pyyaml requests rich rich-click ruamel.yaml tomli typer \
-            > tap-repo/Formula/mdbub_resources.rb
+          poet mdbub > tap-repo/Formula/mdbub_resources.rb
 
       - name: Commit and push changes
         run: |

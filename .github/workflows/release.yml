@@ -103,6 +103,11 @@ jobs:
           poetry build
         shell: bash
 
+      - name: Ensure PyInstaller is installed
+        run: |
+          poetry add --group dev pyinstaller
+        shell: bash
+
       - name: Build standalone executable
         run: |
           poetry run pyinstaller --onefile --name mdbub-${{ matrix.platform }} src/mdbub/cli.py

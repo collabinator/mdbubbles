@@ -98,14 +98,13 @@ jobs:
           poetry version ${{ steps.get_version.outputs.version }}
         shell: bash
 
+      - name: Install all dependencies (including dev)
+        run: poetry install --no-interaction --with dev
+        shell: bash
+
       - name: Build wheel and sdist
         run: |
           poetry build
-        shell: bash
-
-      - name: Ensure PyInstaller is installed
-        run: |
-          poetry add --group dev pyinstaller
         shell: bash
 
       - name: Build standalone executable

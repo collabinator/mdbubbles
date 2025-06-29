@@ -242,9 +242,9 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install homebrew-pypi-poet
+      - name: Install poet-poetry
         run: |
-          pip install homebrew-pypi-poet
+          pip install poet-poetry
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -254,7 +254,7 @@ jobs:
       - name: Generate Homebrew resource blocks
         run: |
           poetry lock
-          poet mdbub > ../tap-repo/Formula/mdbub_resources.rb
+          poet-poetry mdbub > ../tap-repo/Formula/mdbub_resources.rb
         working-directory: ${{ github.workspace }}/mdbubbles
 
       - name: Commit and push Homebrew resource updates

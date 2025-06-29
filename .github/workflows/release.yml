@@ -250,6 +250,7 @@ jobs:
         run: |
           poetry lock --no-update
           poet mdbub > tap-repo/Formula/mdbub_resources.rb
+        working-directory: ${{ github.workspace }}
 
       - name: Commit and push Homebrew resource updates
         run: |

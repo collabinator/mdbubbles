@@ -241,6 +241,11 @@ jobs:
         run: |
           pip install homebrew-pypi-poet
 
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+
       - name: Generate Homebrew resource blocks
         run: |
           poetry lock --no-update

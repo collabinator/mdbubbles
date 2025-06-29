@@ -225,7 +225,12 @@ jobs:
             echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Checkout tap repository
+      - name: Checkout mdbubbles
+        uses: actions/checkout@v4
+        with:
+          path: mdbubbles
+
+      - name: Checkout homebrew-tap
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/homebrew-tap
@@ -249,8 +254,8 @@ jobs:
       - name: Generate Homebrew resource blocks
         run: |
           poetry lock --no-update
-          poet mdbub > tap-repo/Formula/mdbub_resources.rb
-        working-directory: ${{ github.workspace }}
+          poet mdbub > ../tap-repo/Formula/mdbub_resources.rb
+        working-directory: ${{ github.workspace }}/mdbubbles
 
       - name: Commit and push Homebrew resource updates
         run: |

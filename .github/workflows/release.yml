@@ -253,7 +253,7 @@ jobs:
 
       - name: Generate Homebrew resource blocks
         run: |
-          poetry lock --no-update
+          poetry lock
           poet mdbub > ../tap-repo/Formula/mdbub_resources.rb
         working-directory: ${{ github.workspace }}/mdbubbles
 

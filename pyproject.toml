@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mdbub"
-version = "0.3.22"
+version = "0.3.23"
 description = "Terminal-first interactive mindmap CLI tool with extended markdown support"
 authors = ["dudash <different.person@example.com>"]
 license = "Apache-2.0"

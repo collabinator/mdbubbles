@@ -243,6 +243,7 @@ jobs:
 
       - name: Generate Homebrew resource blocks
         run: |
+          poetry lock --no-update
           poet mdbub > tap-repo/Formula/mdbub_resources.rb
 
       - name: Commit and push Homebrew resource updates

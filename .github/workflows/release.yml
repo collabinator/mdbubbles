@@ -248,6 +248,10 @@ jobs:
         with:
           version: latest
 
+      - name: Install poetry-plugin-export
+        run: poetry self add poetry-plugin-export
+        working-directory: ${{ github.workspace }}/mdbubbles
+
       - name: Export requirements from poetry.lock
         run: poetry export --without-hashes -f requirements.txt -o requirements.txt
         working-directory: ${{ github.workspace }}/mdbubbles

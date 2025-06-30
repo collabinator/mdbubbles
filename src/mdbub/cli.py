@@ -89,6 +89,11 @@ def main(
             else:
                 deep_link_path = None
             if file is not None:
+                from pathlib import Path
+
+                path = Path(file)
+                if not path.exists():
+                    path.touch()
                 file_obj = open(file, "r+")
             else:
                 file_obj = None

@@ -293,7 +293,7 @@ jobs:
         run: |
           brew tap ${{ github.repository_owner }}/homebrew-tap
           brew install mdbub
-          mdbub version
+          mdbub --version
 
 
   update-chocolatey:

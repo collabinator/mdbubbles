@@ -74,7 +74,9 @@ def main() -> None:
     )
     console.print("---", style="dim white")
 
-    console.print("[bold blue]Version:[/bold blue] 0.3.0", style="dim white")
+    from mdbub import get_version
+
+    console.print(f"[bold blue]Version:[/bold blue] {get_version()}", style="dim white")
     console.print("[bold blue]Author:[/bold blue] Collabinator Team", style="dim white")
     console.print("[bold blue]License:[/bold blue] Apache 2.0", style="dim white")
     console.print(

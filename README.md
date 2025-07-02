@@ -56,10 +56,15 @@ pip install mdbub
 pipx install mdbub
 
 # Homebrew (macOS)
-brew install mdbub  # (when available in Homebrew Core)
+brew tap collabinator/homebrew-tap
+brew install mdbub  # (won't need tap when available in Homebrew Core)
 
 # Chocolatey (Windows)
-choco install mdbub  # (when available)
+choco install mdbub  # (coming soon)
+```
+
+```bash
+mdbub --about
 ```
 
 ### Early Access

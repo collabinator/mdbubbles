@@ -5,7 +5,12 @@ import (
 	"strings"
 )
 
-const MaxNodeLabelLength = 2048
+const (
+	MaxNodeLabelLength       = 2048 // Maximum allowed characters for a node label
+	truncationSuffix         = "... [truncated]"
+	truncationSuffixLength   = 15 // len(truncationSuffix)
+	maxLabelBeforeTruncation = MaxNodeLabelLength - truncationSuffixLength
+)
 
 // Node represents a single node in the mindmap tree
 type Node struct {
@@ -20,7 +25,7 @@ type Node struct {
 // NewNode creates a new mindmap node with the given label
 func NewNode(label string) *Node {
 	if len(label) > MaxNodeLabelLength {
-		label = label[:MaxNodeLabelLength] + "... [truncated]"
+		label = label[:maxLabelBeforeTruncation] + truncationSuffix
 	}
 	return &Node{
 		Label:    label,

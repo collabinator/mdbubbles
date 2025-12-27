@@ -10,6 +10,11 @@ import (
 	"github.com/collabinator/mdbubbles/internal/mindmap"
 )
 
+const (
+	// IndentSpaces defines the standard indentation size
+	IndentSpaces = 2
+)
+
 var (
 	tagRegex  = regexp.MustCompile(`#([a-zA-Z0-9_-]+)`)
 	kvRegex   = regexp.MustCompile(`@([a-zA-Z0-9_-]+):([^\s]+)`)
@@ -76,7 +81,7 @@ func (p *Parser) ParseFile(path string) (*mindmap.MindMap, error) {
 			// Go back up the tree
 			for indent < lastIndent && len(indentStack) > 1 {
 				indentStack = indentStack[:len(indentStack)-1]
-				lastIndent -= 2
+				lastIndent -= IndentSpaces
 			}
 			if len(indentStack) > 0 {
 				parent := indentStack[len(indentStack)-1]
@@ -144,7 +149,7 @@ func (p *Parser) WriteFile(mm *mindmap.MindMap, path string) error {
 }
 
 func (p *Parser) writeNode(writer *bufio.Writer, node *mindmap.Node, depth int) error {
-	indent := strings.Repeat("  ", depth)
+	indent := strings.Repeat(" ", depth*IndentSpaces)
 	
 	// Write the node label with bullet point
 	line := fmt.Sprintf("%s- %s\n", indent, node.Label)

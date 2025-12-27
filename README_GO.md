@@ -1,4 +1,3 @@
-
 # 🧠 mdbub - Go Edition
 
 > A mindmap tool for your terminal.
@@ -12,11 +11,11 @@
 
 Unlike plain Markdown, `mdbub` lets you *structure* your ideas—navigate, fold, tag, and rework them instantly, using only your keyboard.
 
-**🎉 Now rewritten in Go!** This project has been completely rewritten from Python to Go for better performance, easier distribution, and a more maintainable codebase.
+**🎉 Now rewritten in Go!** Faster, more portable, easier to install, and better performance.
 
 ---
 
-## ✨ Why Go?
+## ✨ What's New in the Go Version
 
 This is a complete rewrite from Python to Go, bringing:
 
@@ -25,14 +24,13 @@ This is a complete rewrite from Python to Go, bringing:
 - **🔧 Easier Installation**: Simple binary distribution for all platforms
 - **🚀 Cross-Platform**: Native binaries for Linux, macOS, and Windows
 - **💪 Better Resource Usage**: Lower memory footprint
-- **🔒 Better Security**: Statically compiled binaries with fewer dependencies
 
 ---
 
 ## 🧨 Features
 
 - **Quick Mode**: Instant mini-editor for rapid note capture (coming soon)
-- **Edit Mode**: Full-screen terminal interface (coming soon)
+- **Edit Mode**: Full-screen terminal interface for folding, searching, tagging (coming soon)
 - **Keyboard-native UX**: Everything is hotkey driven
 - **Tag Support**: Add inline `#tags` to make nodes easier to find or filter
 - **Metadata**: Add inline `@key:value` maps to track metadata of nodes
@@ -55,14 +53,13 @@ It looks like this:
 ● Voice Interaction should be two-way
 └─ No children
 ```
-Just start typing to edit the label on a node; or hit **enter** to add a sibling; or hit **tab** to add a child.
-
-If you add an id in the text, like this: `[id:design/api]`, you can comeback later directly to that node with a deeplink: `mdbub tech_idea.mdbub#design/api`
 
 While you work:
 - Add inline `#tags` to make them easier to find or filter
 - Add inline `@key:value` maps to track metadata of nodes
 - Add inline `[id:something]` ids to later link
+
+---
 
 ## 🛠 Installation
 
@@ -71,7 +68,7 @@ While you work:
 Download the latest release for your platform from the [Releases page](https://github.com/collabinator/mdbubbles/releases).
 
 ```bash
-# Linux (x64)
+# Linux
 wget https://github.com/collabinator/mdbubbles/releases/latest/download/mdbub-linux-amd64
 chmod +x mdbub-linux-amd64
 sudo mv mdbub-linux-amd64 /usr/local/bin/mdbub
@@ -85,9 +82,6 @@ sudo mv mdbub-darwin-amd64 /usr/local/bin/mdbub
 wget https://github.com/collabinator/mdbubbles/releases/latest/download/mdbub-darwin-arm64
 chmod +x mdbub-darwin-arm64
 sudo mv mdbub-darwin-arm64 /usr/local/bin/mdbub
-
-# Windows
-# Download mdbub-windows-amd64.exe from releases and add to PATH
 ```
 
 ### Build from Source
@@ -106,7 +100,9 @@ make build
 go install ./cmd/mdbub
 ```
 
-### Quick Start
+---
+
+## 🚦 Quick Start
 
 ```bash
 # Get version
@@ -123,7 +119,53 @@ mdbub mymap.mdbub
 
 # Print all tags in a file
 mdbub --print-tags mymap.mdbub
+
+# Export mindmap
+mdbub export mymap.mdbub
 ```
+
+---
+
+## 🏗 Building
+
+The project uses a Makefile for common tasks:
+
+```bash
+# Build the binary
+make build
+
+# Run tests
+make test
+
+# Run tests with coverage
+make test-coverage
+
+# Build for multiple platforms
+make build-all
+
+# Format code
+make fmt
+
+# Run linter
+make lint
+
+# Run all checks
+make check
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+go test ./...
+
+# Run tests with coverage
+go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out
+```
+
 ---
 
 ## 🤝 Contribute
@@ -136,6 +178,18 @@ Want to help shape the future of CLI-based structured thinking?
 
 ---
 
+## 📝 Migration from Python Version
+
+If you were using the Python version, the Go version maintains compatibility with the `.mdbub` file format. Your existing mindmap files will continue to work.
+
+Key differences:
+- Single binary instead of Python package
+- Faster startup and execution
+- No need for Python or Poetry
+- Same commands and flags (mostly compatible)
+
+---
+
 ## 🧠 Built for Thinkers
 
 `mdbub` is for people who think in trees.
@@ -143,7 +197,15 @@ Who sketch in lists.
 Who live in the terminal.
 And who know that a good idea starts fast—and needs space to grow.
 
+---
 
+## 📄 License
 
-## License
 This project is licensed under the Apache License 2.0 - see the [LICENSE](./LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+Original Python version design and concept by the mdbub team.
+Go rewrite brings improved performance and portability to the terminal mindmap experience.

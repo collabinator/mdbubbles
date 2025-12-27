@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  PYTHON_VERSION: "3.11"
+  GO_VERSION: "1.21"
 
 jobs:
   test:
@@ -15,73 +15,61 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        go-version: ["1.21", "1.22", "1.23"]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          go-version: ${{ matrix.go-version }}
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: latest
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: Load cached venv
-        id: cached-poetry-dependencies
+      - name: Cache Go modules
         uses: actions/cache@v3
         with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ matrix.go-version }}-
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: latest
-          virtualenvs-create: true
-          virtualenvs-in-project: true
+      - name: Download dependencies
+        run: go mod download
 
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --with dev --no-root
-        shell: bash
+      - name: Verify dependencies
+        run: go mod verify
 
-      - name: Install project
-        run: poetry install --no-interaction
-        shell: bash
-
-      - name: Run linting
-        run: |
-          poetry run isort --profile=black --check-only . || true
-          poetry run black --check . || true
-          poetry run mypy src/ || true
-        shell: bash
+      - name: Build
+        run: go build -v ./cmd/mdbub
 
       - name: Run tests
-        run: poetry run pytest tests/ -v --cov=src/mdbub --cov-report=xml
-        shell: bash
+        run: go test -v -race -coverprofile=coverage.out ./...
 
+      - name: Upload coverage
+        if: matrix.os == 'ubuntu-latest' && matrix.go-version == '1.21'
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.out
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          go-version: ${{ env.GO_VERSION }}
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+      - name: Run go vet
+        run: go vet ./...
 
-      - name: Install dependencies
-        run: poetry install
-
-      - name: Run pre-commit
-        run: poetry run pre-commit run --all-files
+      - name: Run go fmt
+        run: |
+          if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
+            echo "The following files need formatting:"
+            gofmt -s -l .
+            exit 1
+          fi

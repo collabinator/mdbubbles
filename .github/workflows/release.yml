@@ -7,12 +7,12 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to release (e.g., 1.0.0)'
+        description: 'Version to release (e.g., 0.5.0)'
         required: true
         type: string
 
 env:
-  PYTHON_VERSION: "3.11"
+  GO_VERSION: "1.21"
 
 jobs:
   test:
@@ -22,64 +22,45 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: latest
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --with dev --no-root
-        shell: bash
-
-      - name: Install project
-        run: poetry install --no-interaction --with dev
-        shell: bash
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Run tests
-        run: poetry run pytest tests/ -v
-        shell: bash
+        run: go test -v ./...
 
   build:
     needs: test
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
         include:
-          - os: ubuntu-latest
-            platform: linux
-          - os: windows-latest
-            platform: windows
-          - os: macos-latest
-            platform: macos
+          - goos: linux
+            goarch: amd64
+            output: mdbub-linux-amd64
+          - goos: linux
+            goarch: arm64
+            output: mdbub-linux-arm64
+          - goos: darwin
+            goarch: amd64
+            output: mdbub-darwin-amd64
+          - goos: darwin
+            goarch: arm64
+            output: mdbub-darwin-arm64
+          - goos: windows
+            goarch: amd64
+            output: mdbub-windows-amd64.exe
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Get version
         id: get_version
@@ -87,42 +68,28 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-            echo "tag_name=v${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
           else
             echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-            echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Update version in pyproject.toml
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
         run: |
-          poetry version ${{ steps.get_version.outputs.version }}
-        shell: bash
+          go build -ldflags="-s -w -X 'github.com/collabinator/mdbubbles/internal/cli.version=${{ steps.get_version.outputs.version }}'" \
+            -o ${{ matrix.output }} ./cmd/mdbub
 
-      - name: Install all dependencies (including dev)
-        run: poetry install --no-interaction --with dev
-        shell: bash
-
-      - name: Build wheel and sdist
-        run: |
-          poetry build
-        shell: bash
-
-      - name: Build standalone executable
-        run: |
-          poetry run pyinstaller --onefile --name mdbub-${{ matrix.platform }} src/mdbub/cli.py
-        shell: bash
-
-      - name: Upload build artifacts
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: builds-${{ matrix.platform }}
-          path: |
-            dist/*
-            dist/mdbub-${{ matrix.platform }}*
+          name: ${{ matrix.output }}
+          path: ${{ matrix.output }}
 
   release:
     needs: build
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/checkout@v4
         with:
@@ -130,186 +97,52 @@ jobs:
 
       - name: Download all artifacts
         uses: actions/download-artifact@v4
+        with:
+          path: artifacts
 
       - name: Get version
         id: get_version
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-            echo "tag_name=v${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-            echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          fi
+          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.get_version.outputs.tag_name }}
-          release_name: Release ${{ steps.get_version.outputs.tag_name }}
+          name: Release ${{ steps.get_version.outputs.tag_name }}
           draft: false
           prerelease: false
+          files: artifacts/**/*
           body: |
-            ## Changes in this Release
-
-            <!-- Add your release notes here -->
-
-      - name: Upload Release Assets
-        run: |
-          for file in builds-*/*; do
-            if [ -f "$file" ]; then
-              echo "Uploading $file"
-              curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                   -H "Content-Type: application/octet-stream" \
-                   --data-binary @"$file" \
-                   "${{ steps.create_release.outputs.upload_url }}?name=$(basename $file)"
-            fi
-          done
-
-  publish-pypi:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-
-      - name: Get version
-        id: get_version
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Update version
-        run: poetry version ${{ steps.get_version.outputs.version }}
-        shell: bash
-
-      - name: Install PyInstaller
-        run: poetry install --with dev
-
-      - name: Build package
-        run: poetry build
-        shell: bash
-
-      - name: Publish to PyPI
+            ## mdbub ${{ steps.get_version.outputs.tag_name }} - Go Edition
+            
+            A complete rewrite of mdbub in Go for better performance and easier distribution.
+            
+            ### Installation
+            
+            Download the appropriate binary for your platform below:
+            
+            - **Linux (x64)**: `mdbub-linux-amd64`
+            - **Linux (ARM64)**: `mdbub-linux-arm64`
+            - **macOS (Intel)**: `mdbub-darwin-amd64`
+            - **macOS (Apple Silicon)**: `mdbub-darwin-arm64`
+            - **Windows (x64)**: `mdbub-windows-amd64.exe`
+            
+            Make the binary executable and move it to your PATH:
+            ```bash
+            chmod +x mdbub-*
+            sudo mv mdbub-* /usr/local/bin/mdbub
+            ```
+            
+            ### What's New
+            
+            - Complete rewrite in Go
+            - Single binary distribution
+            - Faster performance
+            - Lower memory usage
+            - Cross-platform support
+            
+            See [MIGRATION.md](https://github.com/collabinator/mdbubbles/blob/main/MIGRATION.md) for migration guide from Python version.
         env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-        run: poetry publish
-        shell: bash
-
-  update-homebrew:
-    needs: [release, publish-pypi]
-    runs-on: ubuntu-latest
-    if: vars.HOMEBREW_TAP_ENABLED == 'true'  # Only run if tap is enabled
-    steps:
-      - name: Get version
-        id: get_version
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-            echo "tag_name=v${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-            echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Checkout mdbubbles
-        uses: actions/checkout@v4
-        with:
-          path: mdbubbles
-
-      - name: Checkout homebrew-tap
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository_owner }}/homebrew-tap
-          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-          path: tap-repo
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: latest
-
-      - name: Install poetry-plugin-export
-        run: poetry self add poetry-plugin-export
-        working-directory: ${{ github.workspace }}/mdbubbles
-
-      - name: Export requirements from poetry.lock
-        run: poetry export --without-hashes -f requirements.txt -o requirements.txt
-        working-directory: ${{ github.workspace }}/mdbubbles
-
-      - name: Generate Homebrew resource blocks
-        run: |
-          pip install requests
-          python scripts/make_resources.py --file requirements.txt --output ../tap-repo/Formula/mdbub_resources.rb
-        working-directory: ${{ github.workspace }}/mdbubbles
-
-      - name: Commit and push Homebrew resource updates
-        run: |
-          cd tap-repo
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add Formula/mdbub_resources.rb
-          if ! git diff --cached --quiet; then
-            git commit -m "Update Python dependencies for mdbub formula"
-            git push
-          else
-            echo "No changes to commit."
-          fi
-
-      - name: Update Homebrew formula
-        uses: mislav/bump-homebrew-formula-action@v2
-        with:
-          formula-name: mdbub
-          homebrew-tap: ${{ github.repository_owner }}/homebrew-tap
-          base-branch: main
-          download-url: https://github.com/${{ github.repository }}/archive/refs/tags/${{ steps.get_version.outputs.tag_name }}.tar.gz
-        env:
-          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-
-  homebrew-test:
-    needs: update-homebrew
-    runs-on: macos-latest
-    steps:
-      - name: Install from Homebrew Tap
-        run: |
-          brew tap ${{ github.repository_owner }}/homebrew-tap
-          brew install mdbub
-          mdbub --version
-
-
-  update-chocolatey:
-    needs: [release, publish-pypi]
-    runs-on: windows-latest
-    if: vars.CHOCOLATEY_PUBLISH_ENABLED == 'true'  # Only run if publishing to Chocolatey is enabled
-    steps:
-      - name: Find built nupkg
-        id: find_nupkg
-        run: |
-          $pkg = Get-ChildItem -Path . -Recurse -Filter "mdbub.*.nupkg" | Select-Object -First 1
-          if ($null -eq $pkg) { Write-Error "No .nupkg file found!"; exit 1 }
-          "$env:GITHUB_OUTPUT" | Out-File -Append -Encoding utf8
-          echo "path=$($pkg.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-        shell: pwsh
-
-      - name: Push to Chocolatey
-        run: choco push ${{ steps.find_nupkg.outputs.path }} --api-key ${{ secrets.CHOCOLATEY_REPO_TOKEN }} --source https://push.chocolatey.org/
-        shell: pwsh
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

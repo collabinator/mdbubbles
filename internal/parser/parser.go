@@ -150,7 +150,7 @@ func (p *Parser) WriteFile(mm *mindmap.MindMap, path string) error {
 
 func (p *Parser) writeNode(writer *bufio.Writer, node *mindmap.Node, depth int) error {
 	indent := strings.Repeat(" ", depth*IndentSpaces)
-	
+
 	// Write the node label with bullet point
 	line := fmt.Sprintf("%s- %s\n", indent, node.Label)
 	if _, err := writer.WriteString(line); err != nil {
@@ -183,19 +183,19 @@ func countLeadingSpaces(s string) int {
 func ExtractTags(mm *mindmap.MindMap) []string {
 	tagSet := make(map[string]bool)
 	nodes := mm.AllNodes()
-	
+
 	for _, node := range nodes {
 		tags := node.GetTags()
 		for _, tag := range tags {
 			tagSet[tag] = true
 		}
 	}
-	
+
 	tags := make([]string, 0, len(tagSet))
 	for tag := range tagSet {
 		tags = append(tags, tag)
 	}
-	
+
 	return tags
 }
 
@@ -203,7 +203,7 @@ func ExtractTags(mm *mindmap.MindMap) []string {
 func ExtractLinks(mm *mindmap.MindMap) map[string]*mindmap.Node {
 	links := make(map[string]*mindmap.Node)
 	nodes := mm.AllNodes()
-	
+
 	for _, node := range nodes {
 		if id, ok := node.GetMetadata("id"); ok {
 			if idStr, ok := id.(string); ok {
@@ -211,6 +211,6 @@ func ExtractLinks(mm *mindmap.MindMap) map[string]*mindmap.Node {
 			}
 		}
 	}
-	
+
 	return links
 }

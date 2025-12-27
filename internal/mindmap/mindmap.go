@@ -67,13 +67,13 @@ func (m *MindMap) findNodeByIDRecursive(node *Node, id string) *Node {
 			return node
 		}
 	}
-	
+
 	for _, child := range node.Children {
 		if found := m.findNodeByIDRecursive(child, id); found != nil {
 			return found
 		}
 	}
-	
+
 	return nil
 }
 

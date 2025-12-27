@@ -19,12 +19,13 @@ mdbub lets you build and manage mindmaps directly in your terminal.
 It's designed for speed-of-thought capture, with streamlined modes for
 lightning-fast inline edits and full-screen TUI visual editing.`,
 	Version: version,
+	Args:    cobra.MaximumNArgs(1), // Accept 0 or 1 file argument
 	Run: func(cmd *cobra.Command, args []string) {
 		var filePath string
 		if len(args) > 0 {
 			filePath = args[0]
 		}
-		
+
 		if err := runEditor(filePath); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
@@ -42,7 +43,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&printTags, "print-tags", false, "Print all #tags in the file as a table and exit")
 	rootCmd.Flags().BoolVar(&printKV, "print-kv", false, "Print all @key:value metadata in the file as a table and exit")
 	rootCmd.Flags().BoolVar(&printLinks, "print-links", false, "Print all [id:...] anchors in the file as a table and exit")
-	
+
 	// Add subcommands
 	rootCmd.AddCommand(aboutCmd)
 	rootCmd.AddCommand(exportCmd)
@@ -63,7 +64,7 @@ func runEditor(filePath string) error {
 	if printLinks {
 		return runPrintLinks(filePath)
 	}
-	
+
 	// TODO: Implement interactive editor
 	fmt.Printf("Opening mindmap editor for: %s\n", filePath)
 	fmt.Println("Interactive editor not yet implemented in Go version")

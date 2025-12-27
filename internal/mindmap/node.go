@@ -46,14 +46,14 @@ func (n *Node) AddTag(tag string) {
 	if !ok {
 		tags = make([]string, 0)
 	}
-	
+
 	// Check if tag already exists
 	for _, t := range tags {
 		if t == tag {
 			return
 		}
 	}
-	
+
 	tags = append(tags, tag)
 	n.Metadata["tags"] = tags
 }
@@ -64,14 +64,14 @@ func (n *Node) RemoveTag(tag string) {
 	if !ok {
 		return
 	}
-	
+
 	newTags := make([]string, 0)
 	for _, t := range tags {
 		if t != tag {
 			newTags = append(newTags, t)
 		}
 	}
-	
+
 	if len(newTags) > 0 {
 		n.Metadata["tags"] = newTags
 	} else {
@@ -108,17 +108,17 @@ func (n *Node) String() string {
 func (n *Node) DebugString(indent int) string {
 	var sb strings.Builder
 	prefix := strings.Repeat("  ", indent)
-	
+
 	sb.WriteString(fmt.Sprintf("%s- %s", prefix, n.Label))
 	if len(n.Metadata) > 0 {
 		sb.WriteString(fmt.Sprintf(" (metadata: %v)", n.Metadata))
 	}
 	sb.WriteString("\n")
-	
+
 	for _, child := range n.Children {
 		sb.WriteString(child.DebugString(indent + 1))
 	}
-	
+
 	return sb.String()
 }
 

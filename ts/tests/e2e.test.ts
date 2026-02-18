@@ -459,7 +459,9 @@ describe("e2e: example mindmap files", () => {
     const data = JSON.parse(result.stdout);
     expect(data.length).toBe(10); // 10 nodes with metadata
     // Verify key names
-    const allKeys = new Set(data.flatMap((e: Record<string, unknown>) => Object.keys(e)));
+    const allKeys = new Set(
+      data.flatMap((e: { line: number; node: string; [key: string]: unknown }) => Object.keys(e)),
+    );
     expect(allKeys).toContain("owner");
     expect(allKeys).toContain("priority");
     expect(allKeys).toContain("status");

@@ -31,6 +31,11 @@ function collectTags(node: MindMapNode): Map<string, string[]> {
   return tagMap;
 }
 
+// Column widths for formatted table output
+const TAG_COL_WIDTH = 24;
+// chalk.yellow adds ~10 chars of ANSI escape codes, so pad to TAG_COL_WIDTH + 10
+const TAG_COL_PAD = TAG_COL_WIDTH + 10;
+
 export function runTags(filePath: string): void {
   const content = readFileSync(filePath, "utf-8");
   const root = parseMarkdownToMindmap(content);
@@ -56,10 +61,10 @@ export function runTags(filePath: string): void {
 
   out(chalk.bold("TAGS") + chalk.dim(` (${filePath})`));
   out("");
-  out(chalk.dim("  " + "Tag".padEnd(24) + "Nodes"));
+  out(chalk.dim("  " + "Tag".padEnd(TAG_COL_WIDTH) + "Nodes"));
   out(chalk.dim("  " + "─".repeat(56)));
   for (const [tag, nodes] of sorted) {
-    out(`  ${chalk.yellow("#" + tag).padEnd(34)}${nodes.join(", ")}`);
+    out(`  ${chalk.yellow("#" + tag).padEnd(TAG_COL_PAD)}${nodes.join(", ")}`);
   }
   out("");
 }

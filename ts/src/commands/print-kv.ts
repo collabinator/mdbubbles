@@ -53,6 +53,12 @@ function extractKvFromFile(filePath: string): {
   return { entries, allKeys };
 }
 
+// Column widths for formatted table output
+const LINE_COL_WIDTH = 6;
+const NODE_COL_WIDTH = 24;
+const NODE_MAX_DISPLAY = 22;
+const VALUE_COL_WIDTH = 16;
+
 export function runKv(filePath: string): void {
   const { entries, allKeys } = extractKvFromFile(filePath);
   const { mode } = getOutputOptions();
@@ -88,17 +94,17 @@ export function runKv(filePath: string): void {
   out(
     chalk.dim(
       "  " +
-        "Line".padEnd(6) +
-        "Node".padEnd(24) +
-        keys.map((k) => `@${k}`.padEnd(16)).join(""),
+        "Line".padEnd(LINE_COL_WIDTH) +
+        "Node".padEnd(NODE_COL_WIDTH) +
+        keys.map((k) => `@${k}`.padEnd(VALUE_COL_WIDTH)).join(""),
     ),
   );
-  out(chalk.dim("  " + "─".repeat(30 + keys.length * 16)));
+  out(chalk.dim("  " + "─".repeat(LINE_COL_WIDTH + NODE_COL_WIDTH + keys.length * VALUE_COL_WIDTH)));
 
   for (const entry of entries) {
-    const values = keys.map((k) => (entry.kvs[k] ?? "").padEnd(16));
+    const values = keys.map((k) => (entry.kvs[k] ?? "").padEnd(VALUE_COL_WIDTH));
     out(
-      `  ${chalk.dim(String(entry.line).padEnd(6))}${chalk.cyan(entry.label.slice(0, 22).padEnd(24))}${values.map((v) => chalk.magenta(v)).join("")}`,
+      `  ${chalk.dim(String(entry.line).padEnd(LINE_COL_WIDTH))}${chalk.cyan(entry.label.slice(0, NODE_MAX_DISPLAY).padEnd(NODE_COL_WIDTH))}${values.map((v) => chalk.magenta(v)).join("")}`,
     );
   }
   out("");

@@ -56,12 +56,16 @@ export function runLinks(filePath: string): void {
     return;
   }
 
+  // Column widths for formatted table output
+  const ID_COL_WIDTH = 28;
+  const NODE_MAX_DISPLAY = 50;
+
   out(chalk.bold("LINKS") + chalk.dim(` (${filePath})`));
   out("");
-  out(chalk.dim("  " + "ID".padEnd(28) + "Node"));
+  out(chalk.dim("  " + "ID".padEnd(ID_COL_WIDTH) + "Node"));
   out(chalk.dim("  " + "─".repeat(56)));
   for (const entry of entries) {
-    out(`  ${chalk.yellow(entry.id.padEnd(28))}${entry.node.slice(0, 50)}`);
+    out(`  ${chalk.yellow(entry.id.padEnd(ID_COL_WIDTH))}${entry.node.slice(0, NODE_MAX_DISPLAY)}`);
   }
   out("");
 }

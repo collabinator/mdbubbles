@@ -1,13 +1,16 @@
 /**
- * Print tags command — extracts and displays #tags from a mindmap file.
+ * Tags command — extracts and displays #tags from a mindmap file.
  *
- * Ported from Python: src/mdbub/commands/print_tags.py
+ * Subcommand: mdbub tags <file> [--json] [--plain]
+ *
+ * clig.dev: stdout for data, stderr for messages, --json/--plain for composability.
  */
 
 import chalk from "chalk";
 import { readFileSync } from "node:fs";
 import { parseMarkdownToMindmap } from "../core/parser.js";
 import type { MindMapNode } from "../core/mindmap.js";
+import { out, outJson, outPlain, msg, getOutputOptions } from "../output.js";
 
 /** Recursively collect all tags from a mindmap tree. */
 function collectTags(node: MindMapNode): Map<string, string[]> {
@@ -28,26 +31,35 @@ function collectTags(node: MindMapNode): Map<string, string[]> {
   return tagMap;
 }
 
-export function printTags(filePath: string): void {
+export function runTags(filePath: string): void {
   const content = readFileSync(filePath, "utf-8");
   const root = parseMarkdownToMindmap(content);
   const tagMap = collectTags(root);
+  const { mode } = getOutputOptions();
 
   if (tagMap.size === 0) {
-    console.log(chalk.dim("No tags found."));
+    msg("No tags found.");
     return;
   }
 
-  console.log(chalk.bold.cyan("\n  Tags\n"));
-  console.log(
-    chalk.dim("  " + "Tag".padEnd(24) + "Nodes"),
-  );
-  console.log(chalk.dim("  " + "─".repeat(48)));
+  const sorted = [...tagMap.entries()].sort();
 
-  for (const [tag, nodes] of [...tagMap.entries()].sort()) {
-    console.log(
-      `  ${chalk.yellow("#" + tag).padEnd(24 + 10)}${chalk.white(nodes.join(", "))}`,
-    );
+  if (mode === "json") {
+    outJson(sorted.map(([tag, nodes]) => ({ tag, nodes })));
+    return;
   }
-  console.log();
+
+  if (mode === "plain") {
+    outPlain(["tag", "nodes"], sorted.map(([tag, nodes]) => [tag, nodes.join(",")]));
+    return;
+  }
+
+  out(chalk.bold("TAGS") + chalk.dim(` (${filePath})`));
+  out("");
+  out(chalk.dim("  " + "Tag".padEnd(24) + "Nodes"));
+  out(chalk.dim("  " + "─".repeat(56)));
+  for (const [tag, nodes] of sorted) {
+    out(`  ${chalk.yellow("#" + tag).padEnd(34)}${nodes.join(", ")}`);
+  }
+  out("");
 }

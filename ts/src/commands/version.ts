@@ -1,25 +1,48 @@
 /**
  * Version command — displays version and build info.
  *
- * Ported from Python: src/mdbub/commands/version.py
+ * clig.dev: version should go to stdout so it can be piped/captured.
  */
 
 import chalk from "chalk";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { out, outJson, getOutputOptions } from "../output.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-function getPackageVersion(): string {
-  const pkgPath = join(__dirname, "..", "..", "package.json");
-  const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-  return pkg.version ?? "unknown";
+export function getPackageVersion(): string {
+  for (const rel of [
+    "../package.json",
+    "../../package.json",
+    "../../../package.json",
+  ]) {
+    try {
+      const pkgPath = join(__dirname, rel);
+      const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+      if (pkg.version) return pkg.version;
+    } catch {
+      continue;
+    }
+  }
+  return "unknown";
 }
 
-export function printVersion(): void {
+export function runVersion(): void {
   const version = getPackageVersion();
-  console.log(chalk.bold.cyan(`mdbub`) + ` v${version}`);
-  console.log(chalk.dim(`Runtime: TypeScript + Ink (React for CLI)`));
-  console.log(chalk.dim(`Node.js ${process.version}`));
+  const { mode } = getOutputOptions();
+
+  if (mode === "json") {
+    outJson({ name: "mdbub", version, runtime: "node", nodeVersion: process.version });
+    return;
+  }
+
+  if (mode === "plain") {
+    out(version);
+    return;
+  }
+
+  out(chalk.bold.cyan("mdbub") + ` ${version}`);
+  out(chalk.dim(`Node.js ${process.version}`));
 }

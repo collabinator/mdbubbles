@@ -1,14 +1,15 @@
 /**
- * Print key-value command — extracts and displays @key:value metadata.
+ * KV command — extracts and displays @key:value metadata from a mindmap file.
  *
- * Ported from Python: src/mdbub/commands/print_kv.py
+ * Subcommand: mdbub kv <file> [--json] [--plain]
  *
- * Note: The Python version scans raw file lines with @key:value regex,
- * independent of the tree parser. We replicate that approach here.
+ * clig.dev: stdout for data, stderr for messages, --json/--plain for composability.
+ * Supports both @key:value and @key=value formats.
  */
 
 import chalk from "chalk";
 import { readFileSync } from "node:fs";
+import { out, outJson, outPlain, msg, getOutputOptions } from "../output.js";
 
 interface KvEntry {
   line: number;
@@ -17,7 +18,7 @@ interface KvEntry {
 }
 
 /**
- * Extract @key:value metadata directly from file lines (matching Python behavior).
+ * Extract @key:value metadata directly from file lines.
  * Supports both @key:value and @key=value formats.
  */
 function extractKvFromFile(filePath: string): {
@@ -52,18 +53,39 @@ function extractKvFromFile(filePath: string): {
   return { entries, allKeys };
 }
 
-export function printKv(filePath: string): void {
+export function runKv(filePath: string): void {
   const { entries, allKeys } = extractKvFromFile(filePath);
+  const { mode } = getOutputOptions();
 
   if (entries.length === 0) {
-    console.log(chalk.dim("No @key:value metadata found."));
+    msg("No @key:value metadata found.");
     return;
   }
 
   const keys = [...allKeys].sort();
 
-  console.log(chalk.bold.cyan(`\n  @key:value metadata in ${filePath}\n`));
-  console.log(
+  if (mode === "json") {
+    outJson(
+      entries.map((e) => ({ line: e.line, node: e.label, ...e.kvs })),
+    );
+    return;
+  }
+
+  if (mode === "plain") {
+    outPlain(
+      ["line", "node", ...keys],
+      entries.map((e) => [
+        String(e.line),
+        e.label,
+        ...keys.map((k) => e.kvs[k] ?? ""),
+      ]),
+    );
+    return;
+  }
+
+  out(chalk.bold("METADATA") + chalk.dim(` (${filePath})`));
+  out("");
+  out(
     chalk.dim(
       "  " +
         "Line".padEnd(6) +
@@ -71,13 +93,13 @@ export function printKv(filePath: string): void {
         keys.map((k) => `@${k}`.padEnd(16)).join(""),
     ),
   );
-  console.log(chalk.dim("  " + "─".repeat(30 + keys.length * 16)));
+  out(chalk.dim("  " + "─".repeat(30 + keys.length * 16)));
 
   for (const entry of entries) {
     const values = keys.map((k) => (entry.kvs[k] ?? "").padEnd(16));
-    console.log(
+    out(
       `  ${chalk.dim(String(entry.line).padEnd(6))}${chalk.cyan(entry.label.slice(0, 22).padEnd(24))}${values.map((v) => chalk.magenta(v)).join("")}`,
     );
   }
-  console.log();
+  out("");
 }

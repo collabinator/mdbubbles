@@ -1,3 +1,6 @@
+# THIS IS ARCHIVED - FIND A SIMILAR PROJECT HERE:
+https://github.com/dudash/mdmind
+
 
 # 🧠 mdbub
 
